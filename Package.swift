@@ -9,11 +9,13 @@ let package = Package(
 
         // 🍃 An expressive, performant, and extensible templating language built for Swift.
         .package(url: "https://github.com/vapor/leaf.git", from: "3.0.0"),
+
+        // 🧩 DynamoDB Database
+        .package(url: "https://github.com/Yasumoto/fluent-dynamodb.git", .branch("master"))
     ],
     targets: [
-        .target(name: "App", dependencies: ["Leaf", "Vapor"]),
+        .target(name: "App", dependencies: ["FluentDynamoDB", "Leaf", "Vapor"]),
         .target(name: "Run", dependencies: ["App"]),
         .testTarget(name: "AppTests", dependencies: ["App"])
     ]
 )
-

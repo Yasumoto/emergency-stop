@@ -1,3 +1,5 @@
+import DatabaseKit
+import FluentDynamoDB
 import Leaf
 import Vapor
 
@@ -13,6 +15,18 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     
     // Use Leaf for rendering views
     config.prefer(LeafRenderer.self, for: ViewRenderer.self)
+
+    // Bring in our database
+    try services.register(FluentDynamoDBProvider())
+
+    var databases = DatabasesConfig()
+    let dynamoAccessKey = Environment.get("DYNAMO_ACCCESS_KEY")
+    let dynamoPrivateKey = Environment.get("DYNAMO_SECRET_KEY")
+    let dynamoConfiguration = DynamoConfiguration(accessKeyId: dynamoAccessKey, secretAccessKey: dynamoPrivateKey, region: .useast1, endpoint: nil)
+
+    let dynamo = DynamoDatabase(config: dynamoConfiguration)
+    databases.add(database: dynamo, as: .dynamo)
+    services.register(databases)
 
     // Register middleware
     var middlewares = MiddlewareConfig() // Create _empty_ middleware config

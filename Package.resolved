@@ -2,6 +2,24 @@
   "object": {
     "pins": [
       {
+        "package": "AWSSDKSwift",
+        "repositoryURL": "https://github.com/swift-aws/aws-sdk-swift",
+        "state": {
+          "branch": "return_futures",
+          "revision": "5f7255b9b4c5de3e1846ff00b8649cf750113500",
+          "version": null
+        }
+      },
+      {
+        "package": "AWSSDKSwiftCore",
+        "repositoryURL": "https://github.com/swift-aws/aws-sdk-swift-core",
+        "state": {
+          "branch": "invokeAsync",
+          "revision": "77ae0febb25136cc18eb5efb161e8f459acc8a31",
+          "version": null
+        }
+      },
+      {
         "package": "Console",
         "repositoryURL": "https://github.com/vapor/console.git",
         "state": {
@@ -15,8 +33,8 @@
         "repositoryURL": "https://github.com/vapor/core.git",
         "state": {
           "branch": null,
-          "revision": "57368d4092f92df3131e5968c8ed24a3c7361ec0",
-          "version": "3.8.1"
+          "revision": "2731f8ba0cf274a61c9bd6ab43550f692ffaf879",
+          "version": "3.9.0"
         }
       },
       {
@@ -24,8 +42,8 @@
         "repositoryURL": "https://github.com/vapor/crypto.git",
         "state": {
           "branch": null,
-          "revision": "45bb12d13cdec80dbd1cc0685ea002e51ab83439",
-          "version": "3.3.2"
+          "revision": "df8eb7d8ae51787b3a0628aa3975e67666da936c",
+          "version": "3.3.3"
         }
       },
       {
@@ -38,12 +56,39 @@
         }
       },
       {
+        "package": "Fluent",
+        "repositoryURL": "https://github.com/vapor/fluent",
+        "state": {
+          "branch": null,
+          "revision": "b915c321c6f9e83743ee5efa35a30895e1b02e51",
+          "version": "3.2.0"
+        }
+      },
+      {
+        "package": "fluent-dynamodb",
+        "repositoryURL": "https://github.com/Yasumoto/fluent-dynamodb.git",
+        "state": {
+          "branch": "master",
+          "revision": "66deb3fa0fc59bfd32e4e5d5a7e69b167ca092e9",
+          "version": null
+        }
+      },
+      {
         "package": "HTTP",
         "repositoryURL": "https://github.com/vapor/http.git",
         "state": {
           "branch": null,
           "revision": "254a0a0cbf22a02b697a075a0d2ddbb448bb7c87",
           "version": "3.2.0"
+        }
+      },
+      {
+        "package": "HypertextApplicationLanguage",
+        "repositoryURL": "https://github.com/Yasumoto/HypertextApplicationLanguage.git",
+        "state": {
+          "branch": null,
+          "revision": "2302002502fe573494577cc6e8df686e385519f8",
+          "version": "1.1.0"
         }
       },
       {
@@ -65,6 +110,15 @@
         }
       },
       {
+        "package": "INIParser",
+        "repositoryURL": "https://github.com/PerfectlySoft/Perfect-INIParser.git",
+        "state": {
+          "branch": null,
+          "revision": "0952aac9ca54324ff25191569fd9c48eec424772",
+          "version": "3.0.2"
+        }
+      },
+      {
         "package": "Routing",
         "repositoryURL": "https://github.com/vapor/routing.git",
         "state": {
@@ -80,6 +134,15 @@
           "branch": null,
           "revision": "fa5b5de62bd68bcde9a69933f31319e46c7275fb",
           "version": "1.0.2"
+        }
+      },
+      {
+        "package": "SQL",
+        "repositoryURL": "https://github.com/vapor/sql.git",
+        "state": {
+          "branch": null,
+          "revision": "50eaeb8f52a1ce63f1ff3880e1114dd8757a78a6",
+          "version": "2.3.2"
         }
       },
       {
@@ -116,6 +179,15 @@
           "branch": null,
           "revision": "37760e9a52030bb9011972c5213c3350fa9d41fd",
           "version": "1.0.0"
+        }
+      },
+      {
+        "package": "SwiftyJSON",
+        "repositoryURL": "https://github.com/IBM-Swift/SwiftyJSON.git",
+        "state": {
+          "branch": null,
+          "revision": "f2612ea3ac29996ae9601bdcb00cc1c29e26f104",
+          "version": "17.0.4"
         }
       },
       {
