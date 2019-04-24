@@ -3,25 +3,49 @@ import Vapor
 
 /// Register your application's routes here.
 public func routes(_ router: Router) throws {
-    // "It works" page
+    // TODO(jmsmith): Gotta be a better way to make this happen
+    let tableName = Environment.get("DYNAMO_TABLE_NAME")!
+
     router.get { req -> Future<View> in
-        let id = DatabaseIdentifier<DynamoDatabase>("dynamo")
-        let dynamo = req.databaseConnection(to: id)
-        let key = DynamoValue(attributes: ["key": DynamoValue.Attribute.string("value")])
-        let query = DynamoQuery(action: .set, table: "fake-table", key: key)
-        print("Trying to post the request, then rendering the response")
-        return dynamo.flatMap { connection in
-            return connection.query(query, { print($0) })
-        }.flatMap { written in
-            print(written)
-            return try req.view().render("welcome")
+        let dynamo = req.databaseConnection(to: .dynamo)
+        let key = DynamoValue(attributes: ["SafeToProceed": .string("lock")])
+        let query = DynamoQuery(action: .get, table: tableName, key: key)
+        return dynamo.then { connection in
+            return connection.query(query)
+        }.flatMap { output in
+            var attribute = "Safe to Proceed!"
+            for value in output {
+                for attributes in value.attributes {
+                    attribute = "\(attributes.value)"
+                }
+            }
+            return try req.view().render("index", [
+                "safeToProceed": "\(attribute)"
+                ])
         }
     }
+
+    router.get("lock") { req -> Future<String> in
+        let key = DynamoValue(attributes: ["SafeToProceed": .string("lock")])
+        let query = DynamoQuery(action: .get, table: tableName, key: key)
+        return req.databaseConnection(to: .dynamo).then { connection in
+            return connection.query(query)
+            }.map { "\($0)" }
+    }
     
-    // Says hello
-    router.get("hello", String.parameter) { req -> Future<View> in
-        return try req.view().render("hello", [
-            "name": req.parameters.next(String.self)
-        ])
+    router.post("lock") { req -> Future<String> in
+        let key = DynamoValue(attributes: ["SafeToProceed": .string("lock")])
+        let query = DynamoQuery(action: .set, table: tableName, key: key)
+        return req.databaseConnection(to: .dynamo).then { connection in
+            return connection.query(query)
+        }.map { "\($0)" }
+    }
+
+    router.post("clear") { req -> Future<String> in
+        let key = DynamoValue(attributes: ["SafeToProceed": .string("lock")])
+        let query = DynamoQuery(action: .delete, table: tableName, key: key)
+        return req.databaseConnection(to: .dynamo).then { connection in
+            return connection.query(query)
+            }.map { "\($0)" }
     }
 }

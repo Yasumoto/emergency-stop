@@ -1,0 +1,9 @@
+#set("title") { Changes are #(safeToProceed) }
+
+#set("body") {
+	<div class="welcome">
+        <h1>#(safeToProceed)</h1>
+	</div>
+}
+
+#embed("base")
