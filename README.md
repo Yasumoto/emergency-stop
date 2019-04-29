@@ -1,4 +1,4 @@
-# Red Button
+# Emergency Stop 🔴
 
 <div>
     <a href="https://swift.org">
