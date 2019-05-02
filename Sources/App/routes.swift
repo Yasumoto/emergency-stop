@@ -10,6 +10,9 @@ public func routes(_ router: Router) throws {
         let dynamo = req.databaseConnection(to: .dynamo)
         let key = DynamoValue(attributes: ["SafeToProceed": .string("lock")])
         let query = DynamoQuery(action: .get, table: tableName, key: key)
+        return try req.view().render("index", [
+            "safeToProceed": "\(true)"
+            ])
         return dynamo.then { connection in
             return connection.query(query)
         }.flatMap { output in
@@ -25,8 +28,8 @@ public func routes(_ router: Router) throws {
         }
     }
 
-    router.get("lock") { req -> Future<String> in
-        let key = DynamoValue(attributes: ["SafeToProceed": .string("lock")])
+    router.get("status") { req -> Future<String> in
+        let key = DynamoValue(attributes: ["ServiceName": .string("global"), "Version": .number("0")])
         let query = DynamoQuery(action: .get, table: tableName, key: key)
         return req.databaseConnection(to: .dynamo).then { connection in
             return connection.query(query)
@@ -39,13 +42,5 @@ public func routes(_ router: Router) throws {
         return req.databaseConnection(to: .dynamo).then { connection in
             return connection.query(query)
         }.map { "\($0)" }
-    }
-
-    router.post("clear") { req -> Future<String> in
-        let key = DynamoValue(attributes: ["SafeToProceed": .string("lock")])
-        let query = DynamoQuery(action: .delete, table: tableName, key: key)
-        return req.databaseConnection(to: .dynamo).then { connection in
-            return connection.query(query)
-            }.map { "\($0)" }
     }
 }
