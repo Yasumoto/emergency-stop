@@ -6,7 +6,7 @@
         "repositoryURL": "https://github.com/swift-aws/aws-sdk-swift",
         "state": {
           "branch": "return_futures",
-          "revision": "5f7255b9b4c5de3e1846ff00b8649cf750113500",
+          "revision": "39d2dad34294fd888bdf2abc1eb7987102fada51",
           "version": null
         }
       },
@@ -15,7 +15,7 @@
         "repositoryURL": "https://github.com/swift-aws/aws-sdk-swift-core",
         "state": {
           "branch": "invokeAsync",
-          "revision": "77ae0febb25136cc18eb5efb161e8f459acc8a31",
+          "revision": "361cdfd0081fcd441f608122a49755b1384e2e40",
           "version": null
         }
       },
@@ -69,7 +69,7 @@
         "repositoryURL": "https://github.com/Yasumoto/fluent-dynamodb.git",
         "state": {
           "branch": "master",
-          "revision": "d0076bc22c3ca2d780f2f1520b1df5841387930e",
+          "revision": "53ba4ebd1523141b75510c76ae1fe9b90ea9833e",
           "version": null
         }
       },

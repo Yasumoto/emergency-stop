@@ -1,46 +1,52 @@
 import FluentDynamoDB
+import Foundation
 import Vapor
+
+enum EmergencyStopErrors: Error {
+    case noUsername
+}
 
 /// Register your application's routes here.
 public func routes(_ router: Router) throws {
-    // TODO(jmsmith): Gotta be a better way to make this happen
-    let tableName = Environment.get("DYNAMO_TABLE_NAME")!
-
     router.get { req -> Future<View> in
-        let dynamo = req.databaseConnection(to: .dynamo)
-        let key = DynamoValue(attributes: ["SafeToProceed": .string("lock")])
-        let query = DynamoQuery(action: .get, table: tableName, key: key)
-        return try req.view().render("index", [
-            "safeToProceed": "\(true)"
-            ])
-        return dynamo.then { connection in
-            return connection.query(query)
-        }.flatMap { output in
-            var attribute = "Safe to Proceed!"
-            for value in output {
-                for attributes in value.attributes {
-                    attribute = "\(attributes.value)"
+        return try renderIndex(on: req)
+    }
+
+    router.post() { req -> Future<View> in
+        let username = String(req.http.cookies["machine-cookie"]?.string.split(separator: ":").first ?? "debugging")
+        return try req.content.decode(Update.self).flatMap { update in
+            return ServiceLock.read(on: req, serviceName: ServiceNames.global, version: 0).flatMap { latestLock in
+                var lock = ServiceLock(serviceName: latestLock.serviceName, version: latestLock.currentVersion! + 1, currentVersion: nil, safeToProceed: update.safeToProceed, username: username, timestamp: Date(), message: update.message)
+                return lock.write(on: req).flatMap { writtenOutput -> EventLoopFuture<View> in
+                    lock.currentVersion = lock.version
+                    lock.version = 0
+                    return lock.write(on: req).flatMap { values -> EventLoopFuture<View> in
+                        return try renderIndex(on: req)
+                    }
                 }
             }
-            return try req.view().render("index", [
-                "safeToProceed": "\(attribute)"
-                ])
         }
     }
 
-    router.get("status") { req -> Future<String> in
-        let key = DynamoValue(attributes: ["ServiceName": .string("global"), "Version": .number("0")])
-        let query = DynamoQuery(action: .get, table: tableName, key: key)
-        return req.databaseConnection(to: .dynamo).then { connection in
-            return connection.query(query)
-            }.map { "\($0)" }
+    router.get("status") { req in
+        ServiceLock.read(on: req).map { lock -> String in
+            guard let response = try String(data: JSONEncoder().encode(lock), encoding: .utf8) else {
+                throw ServiceLock.LockError.noResponseError("No lock retrieved.")
+            }
+            return response
+        }
     }
-    
-    router.post("lock") { req -> Future<String> in
-        let key = DynamoValue(attributes: ["SafeToProceed": .string("lock")])
-        let query = DynamoQuery(action: .set, table: tableName, key: key)
-        return req.databaseConnection(to: .dynamo).then { connection in
-            return connection.query(query)
-        }.map { "\($0)" }
+}
+
+func renderIndex(on req: Request) throws -> Future<View> {
+    return ServiceLock.read(on: req, serviceName: ServiceNames.global, version: 0).flatMap { latestLock in
+        return try req.view().render("index", [
+            "global": latestLock
+        ])
     }
+}
+
+struct Update: Codable {
+    public let message: String
+    public let safeToProceed: Bool
 }
