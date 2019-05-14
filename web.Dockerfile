@@ -16,7 +16,7 @@ RUN mkdir -p /build/lib && cp -R /usr/lib/swift/linux/*.so /build/lib
 RUN swift build -c release -Xswiftc -g && mv `swift build -c release -Xswiftc -g --show-bin-path` /build/bin
 
 # Production image
-FROM ubuntu:18.04
+FROM ubuntu:16.04
 ARG env
 RUN apt-get -qq update && apt-get install -y \
   libicu55 libxml2 libbsd0 libcurl3 libatomic1 \
