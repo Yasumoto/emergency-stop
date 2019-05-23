@@ -36,6 +36,10 @@ public func routes(_ router: Router) throws {
             return response
         }
     }
+
+    router.get("health") { req in
+        return "{\"status\": \"okay\"}"
+    }
 }
 
 func renderIndex(on req: Request) throws -> Future<View> {
