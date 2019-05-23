@@ -12,7 +12,7 @@ RUN apt-get -qq update && apt-get -q -y install \
   && rm -r /var/lib/apt/lists/*
 WORKDIR /app
 COPY . .
-RUN mkdir -p /build/lib && cp -R /usr/lib/swift/linux/*.so /build/lib
+RUN mkdir -p /build/lib && cp -R /usr/lib/swift/linux/*.so* /build/lib
 RUN swift build -c release -Xswiftc -g && mv `swift build -c release -Xswiftc -g --show-bin-path` /build/bin
 
 # Production image
@@ -27,6 +27,7 @@ COPY --from=builder /build/bin/Run .
 COPY --from=builder /build/lib/* /usr/lib/
 COPY --from=builder /app/Public ./Public
 COPY --from=builder /app/Resources ./Resources
-ENV ENVIRONMENT=$env
+ENV ENVIRONMENT=docker
+# ENV ENVIRONMENT=$env
 
 ENTRYPOINT ./Run serve --env $ENVIRONMENT --hostname 0.0.0.0 --port 80

@@ -11,7 +11,7 @@ let package = Package(
         .package(url: "https://github.com/vapor/leaf.git", from: "3.0.0"),
 
         // 🧩 DynamoDB Database
-        .package(url: "https://github.com/Yasumoto/fluent-dynamodb.git", .branch("master")),
+        .package(url: "https://github.com/Yasumoto/fluent-dynamodb.git", from: "0.0.1"),
 
         // 🔎 Better support for logging crashes
         .package(url: "https://github.com/ianpartridge/swift-backtrace.git", from: "1.0.2")
