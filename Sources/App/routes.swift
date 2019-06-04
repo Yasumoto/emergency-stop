@@ -6,6 +6,8 @@ enum EmergencyStopErrors: Error {
     case noUsername
 }
 
+let logger = PrintLogger()
+
 /// Register your application's routes here.
 public func routes(_ router: Router) throws {
     router.get { req -> Future<View> in
@@ -31,6 +33,7 @@ public func routes(_ router: Router) throws {
     router.get("status") { req in
         ServiceLock.read(on: req).map { lock -> String in
             guard let response = try String(data: JSONEncoder().encode(lock), encoding: .utf8) else {
+                logger.error("No lock retrieved")
                 throw ServiceLock.LockError.noResponseError("No lock retrieved.")
             }
             return response

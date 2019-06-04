@@ -21,12 +21,10 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
 
     var databases = DatabasesConfig()
 
-    // Note you MUST specify credentials via environment variables:
-    // DYNAMO_ACCCESS_KEY: AWS Access Key to write to all tables you will use
-    // DYNAMO_SECRET_KEY: Secret Key for the AWS user
-    let dynamoAccessKey = Environment.get("DYNAMO_ACCCESS_KEY")
-    let dynamoPrivateKey = Environment.get("DYNAMO_SECRET_KEY")
-    let dynamoConfiguration = DynamoConfiguration(accessKeyId: dynamoAccessKey, secretAccessKey: dynamoPrivateKey)
+    let credentialsPath = Environment.get("CREDENTIALS_FILENAME") ?? "/etc/emergency-stop.json"
+    let creds = awsCredentials(path: credentialsPath)
+
+    let dynamoConfiguration = DynamoConfiguration(accessKeyId: creds.dynamoAccessKey, secretAccessKey: creds.dynamoPrivateKey)
 
     let dynamo = DynamoDatabase(config: dynamoConfiguration)
     databases.add(database: dynamo, as: .dynamo)
