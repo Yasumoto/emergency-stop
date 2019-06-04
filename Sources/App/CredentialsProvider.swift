@@ -36,5 +36,6 @@ func awsCredentials(path: String) -> AWSCreds {
         return AWSCreds(accessKey: accessKey, secretKey: secretKey)
     }
     logger.info("No credentials found via file or ENV variables.")
+    print("No creds found")
     return AWSCreds(accessKey: nil, secretKey: nil)
 }

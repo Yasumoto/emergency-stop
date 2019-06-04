@@ -32,6 +32,7 @@ public func routes(_ router: Router) throws {
     }
 
     router.get("status") { req in
+        print("Checking status")
         ServiceLock.read(on: req).map { lock -> String in
             logger.info("Status being retrieved")
             guard let response = try String(data: JSONEncoder().encode(lock), encoding: .utf8) else {
