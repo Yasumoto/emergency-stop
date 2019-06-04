@@ -11,6 +11,7 @@ let logger = PrintLogger()
 /// Register your application's routes here.
 public func routes(_ router: Router) throws {
     router.get { req -> Future<View> in
+        logger.info("Rendering index")
         return try renderIndex(on: req)
     }
 
@@ -32,9 +33,9 @@ public func routes(_ router: Router) throws {
     }
 
     router.get("status") { req -> EventLoopFuture<String> in
-        print("Checking status")
+        logger.info("Checking status")
         return ServiceLock.read(on: req).map { lock -> String in
-            logger.info("Status being retrieved")
+            logger.info("Retrieved status.")
             guard let response = try String(data: JSONEncoder().encode(lock), encoding: .utf8) else {
                 logger.error("No lock retrieved")
                 throw ServiceLock.LockError.noResponseError("No lock retrieved.")
@@ -44,9 +45,7 @@ public func routes(_ router: Router) throws {
     }
 
     router.get("health") { req -> String in
-        print("Checking health")
-        logger.info("Checking health")
-        return "{\"status\": \"okay\"}"
+        return "{\"health\": \"ok\"}"
     }
 }
 
