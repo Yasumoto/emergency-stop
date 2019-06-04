@@ -24,7 +24,7 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     let credentialsPath = Environment.get("CREDENTIALS_FILENAME") ?? "/etc/emergency-stop.json"
     let creds = awsCredentials(path: credentialsPath)
 
-    let dynamoConfiguration = DynamoConfiguration(accessKeyId: creds.dynamoAccessKey, secretAccessKey: creds.dynamoPrivateKey)
+    let dynamoConfiguration = DynamoConfiguration(accessKeyId: creds.accessKey, secretAccessKey: creds.secretKey)
 
     let dynamo = DynamoDatabase(config: dynamoConfiguration)
     databases.add(database: dynamo, as: .dynamo)
