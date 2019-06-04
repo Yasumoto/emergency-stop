@@ -43,7 +43,6 @@ public func routes(_ router: Router) throws {
     }
 
     router.get("health") { req in
-        logger.info("Health check")
         return "{\"status\": \"okay\"}"
     }
 }
