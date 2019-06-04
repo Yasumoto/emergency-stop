@@ -5,6 +5,8 @@ import Vapor
 
 /// Called before your application initializes.
 public func configure(_ config: inout Config, _ env: inout Environment, _ services: inout Services) throws {
+    let logger = PrintLogger()
+
     // Register providers first
     try services.register(LeafProvider())
 
@@ -22,6 +24,7 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     var databases = DatabasesConfig()
 
     let credentialsPath = Environment.get("CREDENTIALS_FILENAME") ?? "/etc/emergency-stop.json"
+    logger.info("Searching for credentials at \(credentialsPath)")
     let creds = awsCredentials(path: credentialsPath)
 
     let dynamoConfiguration = DynamoConfiguration(accessKeyId: creds.accessKey, secretAccessKey: creds.secretKey)

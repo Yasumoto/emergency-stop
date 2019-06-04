@@ -16,6 +16,7 @@ public func routes(_ router: Router) throws {
 
     router.post() { req -> Future<View> in
         let username = String(req.http.cookies["machine-cookie"]?.string.split(separator: ":").first ?? "debugging")
+        logger.info("\(username) updating the lock")
         return try req.content.decode(Update.self).flatMap { update in
             return ServiceLock.read(on: req, serviceName: ServiceNames.global, version: 0).flatMap { latestLock in
                 var lock = ServiceLock(serviceName: latestLock.serviceName, version: latestLock.currentVersion! + 1, currentVersion: nil, safeToProceed: update.safeToProceed, username: username, timestamp: Date(), message: update.message)
@@ -32,6 +33,7 @@ public func routes(_ router: Router) throws {
 
     router.get("status") { req in
         ServiceLock.read(on: req).map { lock -> String in
+            logger.info("Status being retrieved")
             guard let response = try String(data: JSONEncoder().encode(lock), encoding: .utf8) else {
                 logger.error("No lock retrieved")
                 throw ServiceLock.LockError.noResponseError("No lock retrieved.")
@@ -41,6 +43,7 @@ public func routes(_ router: Router) throws {
     }
 
     router.get("health") { req in
+        logger.info("Health check")
         return "{\"status\": \"okay\"}"
     }
 }

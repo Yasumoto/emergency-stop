@@ -22,15 +22,19 @@ struct AWSCreds: Codable {
 }
 
 func awsCredentials(path: String) -> AWSCreds {
+    let logger = PrintLogger()
     let manager = FileManager.default
 
     if manager.fileExists(atPath: path),
         let url = URL(string: path),
         let data = try? Data(contentsOf: url),
         let creds = try? JSONDecoder().decode(AWSCreds.self, from: data) {
+            logger.info("Found credentials in \(path)")
             return creds
     } else if let accessKey = Environment.get("ACCCESS_KEY"), let secretKey = Environment.get("SECRET_KEY") {
+        logger.info("Found credentials in the environment")
         return AWSCreds(accessKey: accessKey, secretKey: secretKey)
     }
+    logger.info("No credentials found via file or ENV variables.")
     return AWSCreds(accessKey: nil, secretKey: nil)
 }
