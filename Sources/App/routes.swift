@@ -31,9 +31,9 @@ public func routes(_ router: Router) throws {
         }
     }
 
-    router.get("status") { req in
+    router.get("status") { req -> EventLoopFuture<String> in
         print("Checking status")
-        ServiceLock.read(on: req).map { lock -> String in
+        return ServiceLock.read(on: req).map { lock -> String in
             logger.info("Status being retrieved")
             guard let response = try String(data: JSONEncoder().encode(lock), encoding: .utf8) else {
                 logger.error("No lock retrieved")
@@ -43,7 +43,9 @@ public func routes(_ router: Router) throws {
         }
     }
 
-    router.get("health") { req in
+    router.get("health") { req -> String in
+        print("Checking health")
+        logger.info("Checking health")
         return "{\"status\": \"okay\"}"
     }
 }
