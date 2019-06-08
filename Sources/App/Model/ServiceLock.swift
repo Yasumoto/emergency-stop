@@ -10,9 +10,18 @@ import Foundation
 import FluentDynamoDB
 
 public struct ServiceNames {
-    // Consider customization
     /// The table in DynamoDB to query in the account for data
-    static let tableName = "limit-break-emergency-stop"
+    public enum DynamoTableNames: String {
+        case prod = "limit-break-emergency-stop"
+        case dev = "limit-break-emergency-stop-dev"
+    }
+
+    static var dynamoTable: String {
+        if let environment = Environment.get("ENVIRONMENT"), environment == "prod" {
+            return DynamoTableNames.prod.rawValue
+        }
+        return DynamoTableNames.dev.rawValue
+    }
 
     /// Default namespace to track infrastructure-wide health
     static let global = "global"
@@ -113,7 +122,7 @@ extension ServiceLock {
     ///     An `EventLoopFuture` used to indicate success or failure
     public func write(on worker: Request) -> EventLoopFuture<[DynamoValue]> {
         let key = self.dynamoFormat()
-        let query = DynamoQuery(action: .set, table: ServiceNames.tableName, key: key)
+        let query = DynamoQuery(action: .set, table: ServiceNames.dynamoTable, key: key)
         return worker.databaseConnection(to: .dynamo).flatMap { connection in
             connection.query(query)
         }
@@ -130,7 +139,8 @@ extension ServiceLock {
     ///     The desired lock value
     public static func read(on worker: Request, serviceName: String = ServiceNames.global, version: Int = 0) -> EventLoopFuture<ServiceLock> {
         let key = DynamoValue(attributes: [ServiceLock.Fields.serviceName: .string(serviceName), ServiceLock.Fields.version: .number(String(version))])
-        let query = DynamoQuery(action: .get, table: ServiceNames.tableName, key: key)
+
+        let query = DynamoQuery(action: .get, table: ServiceNames.dynamoTable, key: key)
         let queryResponse = worker.databaseConnection(to: .dynamo).flatMap { connection in
             return connection.query(query)
         }

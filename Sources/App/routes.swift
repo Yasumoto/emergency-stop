@@ -1,11 +1,20 @@
 import FluentDynamoDB
 import Foundation
 import Vapor
+import Prometheus
 
 enum EmergencyStopErrors: Error {
     case noUsername
 }
 
+//TODO(Yasumoto): Properly inject
+let prometheus = PrometheusClient()
+let healthCounter = prometheus.createCounter(forType: Int.self, named: "health_count")
+let statusCounter = prometheus.createCounter(forType: Int.self, named: "status_count")
+//TODO: This needs to be available in `SwiftPrometheus`
+//MetricsSystem.bootstrap(prometheus)
+
+//TODO(Yasumoto): Replace with SSWG's logger and properly inject during configuration
 let logger = PrintLogger()
 
 /// Register your application's routes here.
@@ -33,10 +42,13 @@ public func routes(_ router: Router) throws {
     }
 
     router.get("status") { req -> EventLoopFuture<String> in
+        statusCounter.inc()
         logger.info("Checking status")
         return ServiceLock.read(on: req).map { lock -> String in
-            logger.info("Retrieved status.")
-            guard let response = try String(data: JSONEncoder().encode(lock), encoding: .utf8) else {
+            logger.info("Retrieved status at \(Date())")
+            let encoder = JSONEncoder()
+            encoder.keyEncodingStrategy = .convertToSnakeCase
+            guard let response = try String(data: encoder.encode(lock), encoding: .utf8) else {
                 logger.error("No lock retrieved")
                 throw ServiceLock.LockError.noResponseError("No lock retrieved.")
             }
@@ -45,7 +57,12 @@ public func routes(_ router: Router) throws {
     }
 
     router.get("health") { req -> String in
+        healthCounter.inc()
         return "{\"health\": \"ok\"}"
+    }
+
+    router.get("metrics") { req -> String in
+        return prometheus.getMetrics()
     }
 }
 

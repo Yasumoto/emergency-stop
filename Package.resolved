@@ -155,6 +155,15 @@
         }
       },
       {
+        "package": "swift-metrics",
+        "repositoryURL": "https://github.com/apple/swift-metrics.git",
+        "state": {
+          "branch": null,
+          "revision": "8e5110dcd6584ff5acfec40e31263a8d07cba783",
+          "version": "1.1.0"
+        }
+      },
+      {
         "package": "swift-nio",
         "repositoryURL": "https://github.com/apple/swift-nio.git",
         "state": {
@@ -188,6 +197,15 @@
           "branch": null,
           "revision": "37760e9a52030bb9011972c5213c3350fa9d41fd",
           "version": "1.0.0"
+        }
+      },
+      {
+        "package": "SwiftPrometheus",
+        "repositoryURL": "https://github.com/MrLotU/SwiftPrometheus",
+        "state": {
+          "branch": "MetricsLib",
+          "revision": "571afd9cd2ad25b7613ae544808d475ab14dd2b7",
+          "version": null
         }
       },
       {
