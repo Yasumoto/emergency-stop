@@ -72,16 +72,25 @@ var formatter: DateFormatter {
     return dateFormatter
 }
 
-// Fix this below you copy pasted!
-let inputItem = DynamoDB.PutItemInput(item: ["ServiceName": DynamoDB.AttributeValue(s: "global"),
+let currentValue = DynamoDB.PutItemInput(item: ["ServiceName": DynamoDB.AttributeValue(s: "global"),
                                              "Version": DynamoDB.AttributeValue(n: "0"),
+                                             "CurrentVersion": DynamoDB.AttributeValue(n: "1"),
                                              "SafeToProceed": DynamoDB.AttributeValue(bool: safeToProceed),
-                                             "Username": DynamoDB.AttributeValue(s: "testing"),
+                                             "Username": DynamoDB.AttributeValue(s: "local-table-create"),
                                              "Timestamp": DynamoDB.AttributeValue(s: formatter.string(from: Date())),
-                                             "Message": DynamoDB.AttributeValue(s: "starting value")],
+                                             "Message": DynamoDB.AttributeValue(s: "Initial starting value from local-table-create tool")],
                                       returnValues: .allOld, tableName: tableName)
-let putResponse = try dynamo.putItem(inputItem).wait()
-print(putResponse)
+let firstValue = DynamoDB.PutItemInput(item: ["ServiceName": DynamoDB.AttributeValue(s: "global"),
+                                             "Version": DynamoDB.AttributeValue(n: "1"),
+                                             "SafeToProceed": DynamoDB.AttributeValue(bool: safeToProceed),
+                                             "Username": DynamoDB.AttributeValue(s: "local-table-create"),
+                                             "Timestamp": DynamoDB.AttributeValue(s: formatter.string(from: Date())),
+                                             "Message": DynamoDB.AttributeValue(s: "Initial starting value from local-table-create tool")],
+                                      returnValues: .allOld, tableName: tableName)
+let currentResponse = try dynamo.putItem(currentValue).wait()
+print(currentResponse)
+let firstResponse = try dynamo.putItem(firstValue).wait()
+print(firstResponse)
 
 let scanResponse = try dynamo.scan(DynamoDB.ScanInput(tableName: tableName)).wait()
 print(scanResponse)
