@@ -26,10 +26,13 @@ func awsCredentials(path: String) -> AWSCreds {
     let manager = FileManager.default
     logger.info("Searching for credentials at \(path)")
     if manager.fileExists(atPath: path) {
-        if let string = try? String(contentsOfFile: path), let data = string.data(using: .utf8) {
-            if let creds = try? JSONDecoder().decode(AWSCreds.self, from: data) {
-                logger.info("Found credentials in \(path)")
-                return creds
+        if let string = try? String(contentsOfFile: path) {
+            logger.info("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_/abcdefghijklmnopqrstuvwxyz".reduce(string, { $0.replacingOccurrences(of: "\($1)", with: "*")}))
+            if let data = string.data(using: .utf8) {
+                if let creds = try? JSONDecoder().decode(AWSCreds.self, from: data) {
+                    logger.info("Found credentials in \(path)")
+                    return creds
+                }
             }
         }
     } else if let accessKey = Environment.get("ACCCESS_KEY"), let secretKey = Environment.get("SECRET_KEY") {
