@@ -1,51 +1,54 @@
-#set("title") { Changes are #(global.safeToProceed) }
+#set("title") { #if(latestLock.safeToProceed) { Changes are Safe } else { STOP } }
 
 #set("body") {
-	<div class="welcome">
-        #if(global.safeToProceed) {
-		<h1>🍐 All's well</h1>
-	} else {
-		<h1>🍎 WARNING! Global hold on changes!</h1>
-	}
-	<table class="table table-bordered table-hover">
-	<thead class="thead-light">
-        <tr>
-          <th>
-            Username
-          </th>
-          <th>
-            Timestamp
-          </th>
-	  <th>
-	    Message
-	  </th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr>
-            <td>#(global.username)</td>
-            <td>#(global.timestamp)</td>
-	    <td>#(global.message)</td>
-          </tr>
-      </div>
+  <div class="welcome">
+  #if(latestLock.safeToProceed) {
+    <h1>🍐 All's well</h1>
+  } else {
+    <h1>🍎 WARNING! Global hold on changes!</h1>
+  }
+  <table class="table table-bordered table-hover">
+  <thead class="thead-light">
+    <tr>
+      <th>Username</th>
+      <th>Timestamp</th>
+      <th>Message</th>
+      <th>Safe to Proceed</th>
+      <th>Version</th>
+    </tr>
+  </thead>
+    <tbody>
+    #for(lock in history) {
+      <tr>
+        <td>#(lock.username)</td>
+        <td>#date(lock.timestamp)</td>
+	      <td>#(lock.message)</td>
+        #if(lock.safeToProceed) {
+        <td>🍐</td>
+        } else {
+        <td>🍎</td>
+        }
+        <td>#(lock.version)</td>
+      </tr>
+    }
+  </div>
 
     <form method="post">
     <div class="form-group">
       <label for="message">Message</label>
-      <input type="text" name="message" class="form-control"
-       id="message"/>
+      <input type="text" name="message" class="form-control" id="message"/>
     </div>
     <div class="form-group">
-    <input type="hidden" name="safeToProceed" value=#(!global.safeToProceed) />
+      <input type="hidden" name="safeToProceed" value=#(!latestLock.safeToProceed) />
     </div>
-    <button type="submit" class="btn btn-primary">
-    #if(global.safeToProceed) {
-      Initiate Emergency Stop!
-    } else {
-      Clear Issue
-    }
-    </button>
-  </form>
+      <button type="submit" class="btn btn-primary">
+      #if(latestLock.safeToProceed) {
+        Initiate Emergency Stop!
+      } else {
+        Clear Issue
+      }
+      </button>
+    </form>
   </div>
 }
 

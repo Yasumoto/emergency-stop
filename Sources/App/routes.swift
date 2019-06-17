@@ -5,12 +5,14 @@ import Prometheus
 
 enum EmergencyStopErrors: Error {
     case noUsername
+    case noHistory
 }
 
 //TODO(Yasumoto): Properly inject
 let prometheus = PrometheusClient()
 let healthCounter = prometheus.createCounter(forType: Int.self, named: "health_count")
 let statusCounter = prometheus.createCounter(forType: Int.self, named: "status_count")
+let statusErrors = prometheus.createCounter(forType: Int.self, named: "status_errors")
 //TODO: This needs to be available in `SwiftPrometheus`
 //MetricsSystem.bootstrap(prometheus)
 
@@ -24,7 +26,7 @@ public func routes(_ router: Router) throws {
         return try renderIndex(on: req)
     }
 
-    router.post() { req -> Future<View> in
+    router.post { req -> Future<View> in
         let username = String(req.http.cookies["machine-cookie"]?.string.split(separator: ":").first ?? "debugging")
         logger.info("\(username) updating the lock")
         return try req.content.decode(Update.self).flatMap { update in
@@ -41,19 +43,16 @@ public func routes(_ router: Router) throws {
         }
     }
 
+
+
+    // Support more than just a global lock eventually
+    router.get("status", "global", Int.parameter) { req -> EventLoopFuture<String> in
+        let lockVersion = try req.parameters.next(Int.self)
+        return try getLock(on: req, version: lockVersion)
+    }
+
     router.get("status") { req -> EventLoopFuture<String> in
-        statusCounter.inc()
-        logger.info("Checking status")
-        return ServiceLock.read(on: req).map { lock -> String in
-            logger.info("Retrieved status at \(Date())")
-            let encoder = JSONEncoder()
-            encoder.keyEncodingStrategy = .convertToSnakeCase
-            guard let response = try String(data: encoder.encode(lock), encoding: .utf8) else {
-                logger.error("No lock retrieved")
-                throw ServiceLock.LockError.noResponseError("No lock retrieved.")
-            }
-            return response
-        }
+        return try getLock(on: req)
     }
 
     router.get("health") { req -> String in
@@ -66,12 +65,36 @@ public func routes(_ router: Router) throws {
     }
 }
 
+func getLock(on req: Request, version: Int = 0) throws -> EventLoopFuture<String> {
+    statusCounter.inc()
+    logger.info("Checking status for global/\(version)")
+    return ServiceLock.read(on: req, version: version).map { lock -> String in
+        logger.info("Retrieved status of \(version) at \(Date())")
+        let encoder = JSONEncoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        guard let response = try String(data: encoder.encode(lock), encoding: .utf8) else {
+            logger.error("No lock retrieved for global/\(version)")
+            statusErrors.inc()
+            throw ServiceLock.LockError.noResponseError("No lock retrieved.")
+        }
+        return response
+    }
+}
+
 func renderIndex(on req: Request) throws -> Future<View> {
     return ServiceLock.read(on: req, serviceName: ServiceNames.global, version: 0).flatMap { latestLock in
-        return try req.view().render("index", [
-            "global": latestLock
-        ])
+        guard let lastVersion = latestLock.currentVersion else {
+            return req.future(error: EmergencyStopErrors.noHistory)
+        }
+        return ServiceLock.readRange(on: req, serviceName: ServiceNames.global, versions: max(0,   lastVersion-4)...lastVersion).flatMap { (history: [ServiceLock]) -> Future<View> in
+            return try req.view().render("index", IndexContext(latestLock: latestLock, history: history.sorted(by: { $0.version! > $1.version! })))
+        }
     }
+}
+
+struct IndexContext: Encodable {
+    public let latestLock: ServiceLock
+    public let history: [ServiceLock]
 }
 
 struct Update: Codable {

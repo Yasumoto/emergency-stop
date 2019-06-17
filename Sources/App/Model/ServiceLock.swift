@@ -1,6 +1,6 @@
 //
 //  ServiceLock.swift
-//  App
+//  EmergencyStop
 //
 //  Created by Joe Smith on 5/1/19.
 //
@@ -17,7 +17,7 @@ public struct ServiceNames {
     }
 
     static var dynamoTable: String {
-        if let environment = Environment.get("ENVIRONMENT"), environment == "prod" {
+        if let environment = Environment.get("ENVIRONMENT"), environment == "prod" || environment == "local" {
             return DynamoTableNames.prod.rawValue
         }
         return DynamoTableNames.dev.rawValue
@@ -122,7 +122,7 @@ extension ServiceLock {
     ///     An `EventLoopFuture` used to indicate success or failure
     public func write(on worker: Request) -> EventLoopFuture<[DynamoValue]> {
         let key = self.dynamoFormat()
-        let query = DynamoQuery(action: .set, table: ServiceNames.dynamoTable, key: key)
+        let query = DynamoQuery(action: .set, table: ServiceNames.dynamoTable, keys: [key])
         return worker.databaseConnection(to: .dynamo).flatMap { connection in
             connection.query(query)
         }
@@ -140,7 +140,7 @@ extension ServiceLock {
     public static func read(on worker: Request, serviceName: String = ServiceNames.global, version: Int = 0) -> EventLoopFuture<ServiceLock> {
         let key = DynamoValue(attributes: [ServiceLock.Fields.serviceName: .string(serviceName), ServiceLock.Fields.version: .number(String(version))])
 
-        let query = DynamoQuery(action: .get, table: ServiceNames.dynamoTable, key: key)
+        let query = DynamoQuery(action: .get, table: ServiceNames.dynamoTable, keys: [key])
         let queryResponse = worker.databaseConnection(to: .dynamo).flatMap { connection in
             return connection.query(query)
         }
@@ -150,6 +150,18 @@ extension ServiceLock {
                 return lock
             }
             throw LockError.noResponseError("Unable to find lock for \(serviceName)")
+        }
+    }
+
+    /// Find the history for a given ServiceLock
+    public static func readRange(on worker: Request, serviceName: String = ServiceNames.global, versions: ClosedRange<Int>) -> EventLoopFuture<[ServiceLock]> {
+        let keys = versions.compactMap { versionNumber in DynamoValue(attributes: [ServiceLock.Fields.serviceName: .string(serviceName), ServiceLock.Fields.version: .number(String(versionNumber))])}
+        let query = DynamoQuery(action: .get, table: ServiceNames.dynamoTable, keys: keys)
+        let queryResponse = worker.databaseConnection(to: .dynamo).flatMap { connection in
+            return connection.query(query)
+        }
+        return queryResponse.map { (output: [DynamoValue]) in
+            return try output.map { try ServiceLock(value: $0) }
         }
     }
 }
