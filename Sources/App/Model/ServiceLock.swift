@@ -156,7 +156,7 @@ extension ServiceLock {
     /// Find the history for a given ServiceLock
     public static func readRange(on worker: Request, serviceName: String = ServiceNames.global, versions: ClosedRange<Int>) -> EventLoopFuture<[ServiceLock]> {
         let keys = versions.compactMap { versionNumber in DynamoValue(attributes: [ServiceLock.Fields.serviceName: .string(serviceName), ServiceLock.Fields.version: .number(String(versionNumber))])}
-        let query = DynamoQuery(action: .get, table: serviceName, keys: keys)
+        let query = DynamoQuery(action: .get, table: ServiceNames.dynamoTable, keys: keys)
         let queryResponse = worker.databaseConnection(to: .dynamo).flatMap { connection in
             return connection.query(query)
         }

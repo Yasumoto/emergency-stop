@@ -5,6 +5,7 @@ import Prometheus
 
 enum EmergencyStopErrors: Error {
     case noUsername
+    case noHistory
 }
 
 //TODO(Yasumoto): Properly inject
@@ -82,10 +83,18 @@ func getLock(on req: Request, version: Int = 0) throws -> EventLoopFuture<String
 
 func renderIndex(on req: Request) throws -> Future<View> {
     return ServiceLock.read(on: req, serviceName: ServiceNames.global, version: 0).flatMap { latestLock in
-        return try req.view().render("index", [
-            "global": latestLock
-        ])
+        guard let lastVersion = latestLock.currentVersion else {
+            return req.future(error: EmergencyStopErrors.noHistory)
+        }
+        return ServiceLock.readRange(on: req, serviceName: ServiceNames.global, versions: max(0,   lastVersion-4)...lastVersion).flatMap { (history: [ServiceLock]) -> Future<View> in
+            return try req.view().render("index", IndexContext(latestLock: latestLock, history: history.sorted(by: { $0.version! > $1.version! })))
+        }
     }
+}
+
+struct IndexContext: Encodable {
+    public let latestLock: ServiceLock
+    public let history: [ServiceLock]
 }
 
 struct Update: Codable {
