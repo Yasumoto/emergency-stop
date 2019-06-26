@@ -32,7 +32,7 @@ struct ServiceLock: Codable {
         static let serviceName = "ServiceName"
         static let version = "Version"
         static let currentVersion = "CurrentVersion"
-        static let safeToProceed = "SafeToProceed"
+        static let isIncidentOngoing = "IsIncidentOngoing"
         static let username = "Username"
         static let timestamp = "Timestamp"
         static let message = "Message"
@@ -46,7 +46,7 @@ struct ServiceLock: Codable {
     public let serviceName: String
     public var version: Int?
     public var currentVersion: Int?
-    public let safeToProceed: Bool
+    public let isIncidentOngoing: Bool
     public let username: String
     public let timestamp: Date
     public let message: String
@@ -63,7 +63,7 @@ struct ServiceLock: Codable {
         var attributes: [String: DynamoValue.Attribute] = [
             Fields.serviceName: .string(serviceName),
             Fields.version: .number(String(version!)),
-            Fields.safeToProceed: .bool(safeToProceed),
+            Fields.isIncidentOngoing: .bool(isIncidentOngoing),
             Fields.username: .string(username),
             Fields.timestamp: .string(ServiceLock.formatter.string(from: timestamp)),
             Fields.message: .string(message)]
@@ -93,10 +93,10 @@ extension ServiceLock {
             self.currentVersion = currentVersion
         }
 
-        guard let safeToProceedAttribute = attributes[Fields.safeToProceed], case .bool(let safeToProceed) = safeToProceedAttribute else {
-            throw LockError.dynamoParseError("Could not pull out \(Fields.safeToProceed)")
+        guard let isIncidentOngoingAttribute = attributes[Fields.isIncidentOngoing], case .bool(let isIncidentOngoing) = isIncidentOngoingAttribute else {
+            throw LockError.dynamoParseError("Could not pull out \(Fields.isIncidentOngoing)")
         }
-        self.safeToProceed = safeToProceed
+        self.isIncidentOngoing = isIncidentOngoing
 
         guard let usernameAttribute = attributes[Fields.username], case .string(let username) = usernameAttribute else {
             throw LockError.dynamoParseError("Could not pull out \(Fields.username)")

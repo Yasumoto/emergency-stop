@@ -31,7 +31,7 @@ public func routes(_ router: Router) throws {
         logger.info("\(username) updating the lock")
         return try req.content.decode(Update.self).flatMap { update in
             return ServiceLock.read(on: req, serviceName: ServiceNames.global, version: 0).flatMap { latestLock in
-                var lock = ServiceLock(serviceName: latestLock.serviceName, version: latestLock.currentVersion! + 1, currentVersion: nil, safeToProceed: update.safeToProceed, username: username, timestamp: Date(), message: update.message)
+                var lock = ServiceLock(serviceName: latestLock.serviceName, version: latestLock.currentVersion! + 1, currentVersion: nil, isIncidentOngoing: update.isIncidentOngoing, username: username, timestamp: Date(), message: update.message)
                 return lock.write(on: req).flatMap { writtenOutput -> EventLoopFuture<View> in
                     lock.currentVersion = lock.version
                     lock.version = 0
@@ -99,5 +99,5 @@ struct IndexContext: Encodable {
 
 struct Update: Codable {
     public let message: String
-    public let safeToProceed: Bool
+    public let isIncidentOngoing: Bool
 }

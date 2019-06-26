@@ -11,7 +11,7 @@ import Foundation
 
 let path = "/Users/jmsmith/Desktop/aws.json"
 let safeToProceed = false
-let tableName = "limit-break-emergency-stop-dev"
+let tableName = "limit-break-emergency-stop"
 
 struct AWSCreds: Codable {
     /// ACCCESS_KEY: AWS Access Key to write to the tables used by the application
@@ -58,11 +58,15 @@ do {
     print("Table already exists!")
 }
 
-let listResponse = try dynamo.listTables(DynamoDB.ListTablesInput()).wait()
-if let names = listResponse.tableNames {
-    for name in names {
-        print(name)
+do {
+    let listResponse = try dynamo.listTables(DynamoDB.ListTablesInput()).wait()
+    if let names = listResponse.tableNames {
+        for name in names {
+            print(name)
+        }
     }
+} catch {
+    print("Error trying to list tables: \(error)")
 }
 
 var formatter: DateFormatter {
