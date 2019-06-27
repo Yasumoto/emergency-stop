@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/swift-aws/aws-sdk-swift",
         "state": {
           "branch": null,
-          "revision": "29a26999cc49e6a46f1a173c8478963ee80660c6",
-          "version": "3.0.1"
+          "revision": "bc557114b6c16f63780d35ac2c5c21bf5c9b8f12",
+          "version": "3.0.0"
         }
       },
       {
@@ -78,8 +78,8 @@
         "repositoryURL": "https://github.com/vapor/http.git",
         "state": {
           "branch": null,
-          "revision": "3808ed0401379b6e9f4a053f03090ea9d658caa9",
-          "version": "3.2.1"
+          "revision": "254a0a0cbf22a02b697a075a0d2ddbb448bb7c87",
+          "version": "3.2.0"
         }
       },
       {
@@ -210,11 +210,11 @@
       },
       {
         "package": "SwiftyJSON",
-        "repositoryURL": "https://github.com/SwiftyJSON/SwiftyJSON.git",
+        "repositoryURL": "https://github.com/IBM-Swift/SwiftyJSON.git",
         "state": {
           "branch": null,
-          "revision": "2b6054efa051565954e1d2b9da831680026cd768",
-          "version": "4.3.0"
+          "revision": "f2612ea3ac29996ae9601bdcb00cc1c29e26f104",
+          "version": "17.0.4"
         }
       },
       {

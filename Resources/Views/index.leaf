@@ -22,7 +22,7 @@
       <tr>
         <td>#(lock.username)</td>
         <td>#date(lock.timestamp)</td>
-	      <td>#(lock.message)</td>
+        <td>#(lock.message)</td>
         #if(lock.isIncidentOngoing) {
         <td>🍎</td>
         } else {
