@@ -10,7 +10,7 @@ import DynamoDB // /Users/jmsmith/workspace/github.com/swift-aws/aws-sdk-swift
 import Foundation
 
 let path = "/Users/jmsmith/Desktop/aws.json"
-let safeToProceed = false
+let isIncidentOngoing = false
 let tableName = "limit-break-emergency-stop"
 
 struct AWSCreds: Codable {
@@ -79,14 +79,14 @@ var formatter: DateFormatter {
 let currentValue = DynamoDB.PutItemInput(item: ["ServiceName": DynamoDB.AttributeValue(s: "global"),
                                              "Version": DynamoDB.AttributeValue(n: "0"),
                                              "CurrentVersion": DynamoDB.AttributeValue(n: "1"),
-                                             "SafeToProceed": DynamoDB.AttributeValue(bool: safeToProceed),
+                                             "IsIncidentOngoing": DynamoDB.AttributeValue(bool: isIncidentOngoing),
                                              "Username": DynamoDB.AttributeValue(s: "local-table-create"),
                                              "Timestamp": DynamoDB.AttributeValue(s: formatter.string(from: Date())),
                                              "Message": DynamoDB.AttributeValue(s: "Initial starting value from local-table-create tool")],
                                       returnValues: .allOld, tableName: tableName)
 let firstValue = DynamoDB.PutItemInput(item: ["ServiceName": DynamoDB.AttributeValue(s: "global"),
                                              "Version": DynamoDB.AttributeValue(n: "1"),
-                                             "SafeToProceed": DynamoDB.AttributeValue(bool: safeToProceed),
+                                             "IsIncidentOngoing": DynamoDB.AttributeValue(bool: isIncidentOngoing),
                                              "Username": DynamoDB.AttributeValue(s: "local-table-create"),
                                              "Timestamp": DynamoDB.AttributeValue(s: formatter.string(from: Date())),
                                              "Message": DynamoDB.AttributeValue(s: "Initial starting value from local-table-create tool")],
