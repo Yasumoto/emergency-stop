@@ -2,19 +2,23 @@ import FluentDynamoDB
 import Foundation
 import Vapor
 import Prometheus
+import Metrics
 
 enum EmergencyStopErrors: Error {
     case noUsername
     case noHistory
 }
 
-//TODO(Yasumoto): Properly inject
-let prometheus = PrometheusClient()
-let healthCounter = prometheus.createCounter(forType: Int.self, named: "health_count")
-let statusCounter = prometheus.createCounter(forType: Int.self, named: "status_count")
-let statusErrors = prometheus.createCounter(forType: Int.self, named: "status_errors")
-//TODO: This needs to be available in `SwiftPrometheus`
-//MetricsSystem.bootstrap(prometheus)
+struct UrlLabel: MetricLabels {
+    init() {
+        self.url = ""
+    }
+
+    init(url: String) {
+        self.url = url
+    }
+    let url: String
+}
 
 //TODO(Yasumoto): Replace with SSWG's logger and properly inject during configuration
 let logger = PrintLogger()
@@ -56,17 +60,11 @@ public func routes(_ router: Router) throws {
     }
 
     router.get("health") { req -> String in
-        healthCounter.inc()
         return "{\"health\": \"ok\"}"
-    }
-
-    router.get("metrics") { req -> String in
-        return prometheus.getMetrics()
     }
 }
 
 func getLock(on req: Request, version: Int = 0) throws -> EventLoopFuture<String> {
-    statusCounter.inc()
     logger.info("Checking status for global/\(version)")
     return ServiceLock.read(on: req, version: version).map { lock -> String in
         logger.info("Retrieved status of \(version) at \(Date())")
@@ -74,7 +72,12 @@ func getLock(on req: Request, version: Int = 0) throws -> EventLoopFuture<String
         encoder.keyEncodingStrategy = .convertToSnakeCase
         guard let response = try String(data: encoder.encode(lock), encoding: .utf8) else {
             logger.error("No lock retrieved for global/\(version)")
-            statusErrors.inc()
+            do {
+                let promClient = try req.make(PrometheusClient.self)
+                promClient.createCounter(forType: Int.self, named: "lock_read_errors_total", withLabelType: UrlLabel.self).inc(1, UrlLabel(url: req.http.url.path))
+            } catch {
+                print("No prometheus client bootstrapped!")
+            }
             throw ServiceLock.LockError.noResponseError("No lock retrieved.")
         }
         return response
@@ -84,6 +87,12 @@ func getLock(on req: Request, version: Int = 0) throws -> EventLoopFuture<String
 func renderIndex(on req: Request) throws -> Future<View> {
     return ServiceLock.read(on: req, serviceName: ServiceNames.global, version: 0).flatMap { latestLock in
         guard let lastVersion = latestLock.currentVersion else {
+            do {
+                let promClient = try req.make(PrometheusClient.self)
+                promClient.createCounter(forType: Int.self, named: "lock_read_errors_total", withLabelType: UrlLabel.self).inc(1, UrlLabel(url: req.http.url.path))
+            } catch {
+                print("No prometheus client bootstrapped!")
+            }
             return req.future(error: EmergencyStopErrors.noHistory)
         }
         return ServiceLock.readRange(on: req, serviceName: ServiceNames.global, versions: max(0,   lastVersion-4)...lastVersion).flatMap { (history: [ServiceLock]) -> Future<View> in
