@@ -2,6 +2,7 @@ import DatabaseKit
 import FluentDynamoDB
 import Leaf
 import Vapor
+import VaporMonitoring
 
 /// Called before your application initializes.
 public func configure(_ config: inout Config, _ env: inout Environment, _ services: inout Services) throws {
@@ -12,6 +13,10 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     let router = EngineRouter.default()
     try routes(router)
     services.register(router, as: Router.self)
+
+    // Use Prometheus 🔥 for monitoring
+    let prometheusService = VaporPrometheus(router: router, route: "metrics")
+    services.register(prometheusService)
     
     // Use Leaf for rendering views
     config.prefer(LeafRenderer.self, for: ViewRenderer.self)
@@ -32,7 +37,10 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     services.register(databases)
 
     // Register middleware
+    services.register(MetricsMiddleware(), as: MetricsMiddleware.self)
+
     var middlewares = MiddlewareConfig() // Create _empty_ middleware config
+    middlewares.use(MetricsMiddleware.self) // We want to see RED (Requests, Errors, Duration) for all requests
     middlewares.use(FileMiddleware.self) // Serves files from `Public/` directory
     middlewares.use(ErrorMiddleware.self) // Catches errors and converts to HTTP response
     services.register(middlewares)

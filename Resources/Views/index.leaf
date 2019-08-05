@@ -3,9 +3,9 @@
 #set("body") {
   <div class="welcome">
   #if(lock.isIncidentOngoing) {
-    <h1>🍎 WARNING! Global hold on changes!</h1>
+    <h1>🍎 WARNING! Global Hold on Loadtests!</h1>
 } else {
-    <h1>🍐 All's well</h1>
+    <h1>🍐 All's Well — Loadtesting May Proceed</h1>
   }
   <table class="table table-bordered table-hover">
   <thead class="thead-light">

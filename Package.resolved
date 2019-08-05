@@ -201,11 +201,11 @@
       },
       {
         "package": "SwiftPrometheus",
-        "repositoryURL": "https://github.com/MrLotU/SwiftPrometheus",
+        "repositoryURL": "https://github.com/Yasumoto/SwiftPrometheus.git",
         "state": {
-          "branch": "MetricsLib",
-          "revision": "700ff7a5f2f760a59ef32d585aea2152bbf7b1be",
-          "version": null
+          "branch": null,
+          "revision": "37237516f92a18148d6ae2ccbc378481b21fe07d",
+          "version": "1.0.0-yasumoto.1"
         }
       },
       {
@@ -251,6 +251,15 @@
           "branch": null,
           "revision": "c86ada59b31c69f08a6abd4f776537cba48d5df6",
           "version": "3.3.0"
+        }
+      },
+      {
+        "package": "VaporMonitoring",
+        "repositoryURL": "https://github.com/Yasumoto/VaporMonitoring.git",
+        "state": {
+          "branch": "yasumoto-fork-the-things",
+          "revision": "9ded4c6c337be53e8648a68dd3287a41aec6c699",
+          "version": null
         }
       },
       {

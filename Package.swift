@@ -17,14 +17,20 @@ let package = Package(
         .package(url: "https://github.com/ianpartridge/swift-backtrace.git", from: "1.0.2"),
 
         // 🔥 Prometheus
-        .package(url: "https://github.com/MrLotU/SwiftPrometheus", .branch("MetricsLib")),
+        .package(url: "https://github.com/Yasumoto/SwiftPrometheus.git", from: "1.0.0-yasumoto.1"),
 
-        // 📈 Metrics
-        .package(url: "https://github.com/apple/swift-metrics.git", from: "1.0.0"),
-
+        // 📈 Metrics & Monitoring
+        .package(url: "https://github.com/Yasumoto/VaporMonitoring.git", .branch("yasumoto-fork-the-things"))
     ],
     targets: [
-        .target(name: "App", dependencies: ["FluentDynamoDB", "Leaf", "Backtrace", "Vapor", "SwiftPrometheus", "Metrics"]),
+        .target(name: "App", dependencies: [
+            "Backtrace",
+            "FluentDynamoDB",
+            "Leaf",
+            "SwiftPrometheus",
+            "Vapor",
+            "VaporMonitoring"
+        ]),
         .target(name: "Run", dependencies: ["App"]),
         .testTarget(name: "AppTests", dependencies: ["App"])
     ]
