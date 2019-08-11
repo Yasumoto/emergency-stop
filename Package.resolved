@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/swift-aws/aws-sdk-swift",
         "state": {
           "branch": null,
-          "revision": "fc7b893a5a04f107039263ec51fc47fe4e4dd4bb",
-          "version": "3.1.0"
+          "revision": "bc557114b6c16f63780d35ac2c5c21bf5c9b8f12",
+          "version": "3.0.0"
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/swift-aws/aws-sdk-swift-core.git",
         "state": {
           "branch": null,
-          "revision": "80cc521d5e3f42242f10d9d0fe268cf003a3badb",
-          "version": "3.1.1"
+          "revision": "254c1e3f85414bf0f529f47cc081be2bd0c12c1c",
+          "version": "3.0.1"
         }
       },
       {
@@ -206,6 +206,15 @@
           "branch": null,
           "revision": "37237516f92a18148d6ae2ccbc378481b21fe07d",
           "version": "1.0.0-yasumoto.1"
+        }
+      },
+      {
+        "package": "SwiftyJSON",
+        "repositoryURL": "https://github.com/IBM-Swift/SwiftyJSON.git",
+        "state": {
+          "branch": null,
+          "revision": "f9b4754017cfad4701f0838b2e507b442eaca70a",
+          "version": "17.0.5"
         }
       },
       {
