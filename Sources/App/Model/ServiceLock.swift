@@ -17,7 +17,7 @@ public struct ServiceNames {
     }
 
     static var dynamoTable: String {
-        if let environment = Environment.get("ENVIRONMENT"), environment == "prod" || environment == "local" {
+        if let environment = Environment.get("ENVIRONMENT"), environment == "prod" {
             return DynamoTableNames.prod.rawValue
         }
         return DynamoTableNames.dev.rawValue
@@ -165,3 +165,5 @@ extension ServiceLock {
         }
     }
 }
+
+extension ServiceLock: Content { } // So we can convert to JSON in a request

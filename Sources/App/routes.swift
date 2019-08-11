@@ -47,8 +47,6 @@ public func routes(_ router: Router) throws {
         }
     }
 
-
-
     // Support more than just a global lock eventually
     router.get("status", "global", Int.parameter) { req -> EventLoopFuture<String> in
         let lockVersion = try req.parameters.next(Int.self)

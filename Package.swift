@@ -14,7 +14,7 @@ let package = Package(
         .package(url: "https://github.com/Yasumoto/fluent-dynamodb.git", from: "0.0.3"),
 
         // 🔎 Better support for logging crashes
-        .package(url: "https://github.com/ianpartridge/swift-backtrace.git", from: "1.0.2"),
+        .package(url: "https://github.com/ianpartridge/swift-backtrace.git", from: "1.1.0"),
 
         // 🔥 Prometheus
         .package(url: "https://github.com/Yasumoto/SwiftPrometheus.git", from: "1.0.0-yasumoto.1"),
@@ -31,6 +31,7 @@ let package = Package(
             "Vapor",
             "VaporMonitoring"
         ]),
+        .target(name: "BootstrapDatabaseTool", dependencies: ["FluentDynamoDB"]),
         .target(name: "Run", dependencies: ["App"]),
         .testTarget(name: "AppTests", dependencies: ["App"])
     ]
