@@ -10,6 +10,9 @@ import Foundation
 import FluentDynamoDB
 import Vapor
 
+//TODO(Yasumoto): Fix when FluentDynamoDB has proper support for queries
+import DynamoDB
+
 public struct LoadtestInvocation {
     public enum InvocationError: Error {
         case dynamoParseError(String)
@@ -113,9 +116,22 @@ extension LoadtestInvocation {
     }
 
     public static func readActive(on worker: Request, checkinMinutes: Int = 90) -> EventLoopFuture<[LoadtestInvocation]> {
-        //TODO(Yasumoto): Finish
-        //let key =
-        return worker.future(error: InvocationError.dynamoParseError("not implemented yet"))
+        let now = Date()
+        let earlier = now.addingTimeInterval(Double(-checkinMinutes) * 60.0)
+
+        let expressionAttributeNames: [String: String]? = ["#S": Fields.serviceName, "#T": Fields.timestamp]
+        let expressionAttributeValues: [String: DynamoDB.AttributeValue]? = [
+            ":global": DynamoDB.AttributeValue(s: "global"),
+            ":then": DynamoDB.AttributeValue(s: LoadtestInvocation.formatter.string(from: earlier)),
+            ":now": DynamoDB.AttributeValue(s: LoadtestInvocation.formatter.string(from: now))]
+
+        let keyConditionExpression = "#S = :global AND #T BETWEEN :then AND :now"
+        let query = DynamoQuery(action: .filter, table: LoadtestInvocation.dynamoTable, keys: [DynamoValue](), index: LoadtestInvocation.TimeGSI, expressionAttributeNames: expressionAttributeNames, expressionAttributeValues: expressionAttributeValues, keyConditionExpression: keyConditionExpression)
+        return worker.databaseConnection(to: .dynamo).flatMap { connection in
+            connection.query(query).map { (output: [DynamoValue]) in
+                return try output.map { try LoadtestInvocation(value: $0) }
+            }
+        }
     }
 }
 
