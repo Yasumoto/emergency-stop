@@ -4,9 +4,52 @@
   <div class="welcome">
   #if(lock.isIncidentOngoing) {
     <h1>🍎 WARNING! Global Hold on Loadtests!</h1>
-} else {
+  } else {
     <h1>🍐 All's Well — Loadtesting May Proceed</h1>
   }
+
+  <form method="post">
+    <div class="form-group">
+      <label for="message">Message</label>
+      <input type="text" name="message" class="form-control" id="message"/>
+    </div>
+    <div class="form-group">
+      <input type="hidden" name="isIncidentOngoing" value=#(!latestLock.isIncidentOngoing) />
+    </div>
+    <button type="submit" class="btn btn-primary">
+    #if(latestLock.isIncidentOngoing) {
+      Clear Issue
+    } else {
+      Initiate Emergency Stop!
+    }
+    </button>
+  </form>
+
+<div class="mt-5">
+  <h2>Running Loadtests</h2>
+  <table class="table table-bordered table-hover">
+  <thead class="thead-light">
+    <tr>
+      <th>Timestamp</th>
+      <th>Username</th>
+      <th>Hostname</th>
+      <th>Loadtest Tool</th>
+    </tr>
+  </thead>
+    <tbody>
+    #for(invocation in activeInvocations) {
+      <tr>
+        <td>#date(invocation.timestamp)</td>
+        <td>#(invocation.username)</td>
+        <td>#(invocation.hostname)</td>
+        <td>#(invocation.loadtestToolName)</td>
+      </tr>
+    }
+    </table>
+</div>
+
+<div class="mt-5">
+  <h2>Emergency Stop History</h2>
   <table class="table table-bordered table-hover">
   <thead class="thead-light">
     <tr>
@@ -31,25 +74,8 @@
         <td>#(lock.version)</td>
       </tr>
     }
-  </div>
-
-    <form method="post">
-    <div class="form-group">
-      <label for="message">Message</label>
-      <input type="text" name="message" class="form-control" id="message"/>
-    </div>
-    <div class="form-group">
-      <input type="hidden" name="isIncidentOngoing" value=#(!latestLock.isIncidentOngoing) />
-    </div>
-      <button type="submit" class="btn btn-primary">
-      #if(latestLock.isIncidentOngoing) {
-        Clear Issue
-      } else {
-        Initiate Emergency Stop!
-      }
-      </button>
-    </form>
-  </div>
+    </table>
+<div>
 }
 
 #embed("base")
