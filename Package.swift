@@ -11,7 +11,8 @@ let package = Package(
         .package(url: "https://github.com/vapor/leaf.git", from: "3.0.0"),
 
         // 🧩 DynamoDB Database
-        .package(url: "https://github.com/Yasumoto/fluent-dynamodb.git", from: "0.0.3"),
+        //.package(url: "https://github.com/Yasumoto/fluent-dynamodb.git", from: "0.0.3"),
+        .package(path: "/Users/jmsmith/workspace/github.com/Yasumoto/fluent-dynamodb"),
 
         // 🔎 Better support for logging crashes
         .package(url: "https://github.com/ianpartridge/swift-backtrace.git", from: "1.1.0"),
@@ -20,7 +21,8 @@ let package = Package(
         .package(url: "https://github.com/Yasumoto/SwiftPrometheus.git", from: "1.0.0-yasumoto.1"),
 
         // 📈 Metrics & Monitoring
-        .package(url: "https://github.com/Yasumoto/VaporMonitoring.git", .branch("yasumoto-fork-the-things"))
+        .package(url: "https://github.com/Yasumoto/VaporMonitoring.git", .branch("yasumoto-fork-the-things")),
+
     ],
     targets: [
         .target(name: "App", dependencies: [

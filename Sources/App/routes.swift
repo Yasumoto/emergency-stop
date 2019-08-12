@@ -7,6 +7,8 @@ import Metrics
 enum EmergencyStopErrors: Error {
     case noUsername
     case noHistory
+    case malformedInvocation(String)
+    case dynamoWriteError(String)
 }
 
 struct UrlLabel: MetricLabels {
@@ -18,6 +20,18 @@ struct UrlLabel: MetricLabels {
         self.url = url
     }
     let url: String
+}
+
+struct InvocationLabel: MetricLabels {
+    init() {
+        self.tool = ""
+    }
+
+    init(tool: String) {
+        self.tool = tool
+    }
+
+    let tool: String
 }
 
 //TODO(Yasumoto): Replace with SSWG's logger and properly inject during configuration
@@ -45,6 +59,16 @@ public func routes(_ router: Router) throws {
                 }
             }
         }
+    }
+
+    router.post(LoadtestInvocation.self, at: "register") { (req, invocation) -> EventLoopFuture<LoadtestInvocation> in
+        do {
+            let promClient = try req.make(PrometheusClient.self)
+            promClient.createCounter(forType: Int.self, named: "invocation_register", withLabelType: InvocationLabel.self).inc(1, InvocationLabel(tool: invocation.loadtestToolName))
+        } catch {
+            print("Problem persisting metrics to prometheus: \(error)")
+        }
+        return invocation.write(on: req)
     }
 
     // Support more than just a global lock eventually
@@ -83,19 +107,22 @@ func getLock(on req: Request, version: Int = 0) throws -> EventLoopFuture<String
 }
 
 func renderIndex(on req: Request) throws -> Future<View> {
-    return ServiceLock.read(on: req, serviceName: ServiceNames.global, version: 0).flatMap { latestLock in
+    let locks: EventLoopFuture<[ServiceLock]> = ServiceLock.read(on: req, serviceName: ServiceNames.global, version: 0).flatMap { (latestLock: ServiceLock) -> EventLoopFuture<[ServiceLock]> in
         guard let lastVersion = latestLock.currentVersion else {
             do {
                 let promClient = try req.make(PrometheusClient.self)
                 promClient.createCounter(forType: Int.self, named: "lock_read_errors_total", withLabelType: UrlLabel.self).inc(1, UrlLabel(url: req.http.url.path))
             } catch {
-                print("No prometheus client bootstrapped!")
+                print("No prometheus client bootstrapped: \(error)")
             }
             return req.future(error: EmergencyStopErrors.noHistory)
         }
-        return ServiceLock.readRange(on: req, serviceName: ServiceNames.global, versions: max(0,   lastVersion-4)...lastVersion).flatMap { (history: [ServiceLock]) -> Future<View> in
-            return try req.view().render("index", IndexContext(latestLock: latestLock, history: history.sorted(by: { $0.version! > $1.version! })))
-        }
+        return ServiceLock.readRange(on: req, serviceName: ServiceNames.global, versions: max(0,   lastVersion-4)...lastVersion)
+    }
+    let invocations: EventLoopFuture<[LoadtestInvocation]> = LoadtestInvocation.readActive(on: req)
+    return locks.and(invocations).flatMap{ (recentLocks: [ServiceLock], invocations: [LoadtestInvocation]) -> Future<View> in
+        let lockHistory = recentLocks.sorted(by: { $0.version! > $1.version! })
+        return try req.view().render("index", IndexContext(latestLock: lockHistory.first!, history: lockHistory))
     }
 }
 

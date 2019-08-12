@@ -10,4 +10,4 @@ else
     docker run -d -p 8000:8000 --name emergency-stop-dynamodb amazon/dynamodb-local
 fi
 
-ENVIRONMENT=local CREDENTIALS_FILENAME="$(basename "${0}")/aws-dev.json" swift run Run
+ENVIRONMENT=local CREDENTIALS_FILENAME="$(dirname "${0}")/aws-dev.json" swift run Run
