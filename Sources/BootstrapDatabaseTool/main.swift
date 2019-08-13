@@ -42,7 +42,7 @@ struct AWSCreds: Codable {
         case secretKey = "SECRET_KEY"
     }
 }
-B
+
 let manager = FileManager.default
 let dynamo: DynamoDB
 if let path = path, manager.fileExists(atPath: path) {
