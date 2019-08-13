@@ -65,6 +65,15 @@
         }
       },
       {
+        "package": "fluent-dynamodb",
+        "repositoryURL": "https://github.com/Yasumoto/fluent-dynamodb",
+        "state": {
+          "branch": "query-support",
+          "revision": "129a068b5cba0ce380cc35f1998d416068530b06",
+          "version": null
+        }
+      },
+      {
         "package": "HTTP",
         "repositoryURL": "https://github.com/vapor/http.git",
         "state": {
@@ -240,7 +249,7 @@
         "repositoryURL": "https://github.com/Yasumoto/VaporMonitoring.git",
         "state": {
           "branch": "yasumoto-fork-the-things",
-          "revision": "9ded4c6c337be53e8648a68dd3287a41aec6c699",
+          "revision": "f2dfedf22d2477dece3edb65a3a07f38082b0410",
           "version": null
         }
       },

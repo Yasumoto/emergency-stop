@@ -12,7 +12,7 @@ let package = Package(
 
         // 🧩 DynamoDB Database
         //.package(url: "https://github.com/Yasumoto/fluent-dynamodb.git", from: "0.0.3"),
-        .package(path: "/Users/jmsmith/workspace/github.com/Yasumoto/fluent-dynamodb"),
+        .package(url: "https://github.com/Yasumoto/fluent-dynamodb", .branch("query-support")),
 
         // 🔎 Better support for logging crashes
         .package(url: "https://github.com/ianpartridge/swift-backtrace.git", from: "1.1.0"),
