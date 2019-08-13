@@ -120,9 +120,9 @@ func renderIndex(on req: Request) throws -> Future<View> {
         return ServiceLock.readRange(on: req, serviceName: ServiceNames.global, versions: max(0,   lastVersion-4)...lastVersion)
     }
     let invocations: EventLoopFuture<[LoadtestInvocation]> = LoadtestInvocation.readActive(on: req)
-    return locks.and(invocations).flatMap{ (recentLocks: [ServiceLock], invocations: [LoadtestInvocation]) -> Future<View> in
+    return locks.and(invocations).flatMap{ (recentLocks: [ServiceLock], activeInvocations: [LoadtestInvocation]) -> Future<View> in
         let lockHistory = recentLocks.sorted(by: { $0.version! > $1.version! })
-        return try req.view().render("index", IndexContext(activeInvocations: invocations, latestLock: lockHistory.first!, lockHistory: lockHistory))
+        return try req.view().render("index", IndexContext(activeInvocations: activeInvocations, latestLock: lockHistory.first!, lockHistory: lockHistory))
     }
 }
 
