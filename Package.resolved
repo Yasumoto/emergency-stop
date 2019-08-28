@@ -87,8 +87,8 @@
         "repositoryURL": "https://github.com/Yasumoto/HypertextApplicationLanguage.git",
         "state": {
           "branch": null,
-          "revision": "2302002502fe573494577cc6e8df686e385519f8",
-          "version": "1.1.0"
+          "revision": "aa2c9141d491682f17b2310aed17b9adfc006256",
+          "version": "1.1.1"
         }
       },
       {
@@ -201,11 +201,11 @@
       },
       {
         "package": "SwiftPrometheus",
-        "repositoryURL": "https://github.com/Yasumoto/SwiftPrometheus.git",
+        "repositoryURL": "https://github.com/MrLotU/SwiftPrometheus.git",
         "state": {
           "branch": null,
-          "revision": "37237516f92a18148d6ae2ccbc378481b21fe07d",
-          "version": "1.0.0-yasumoto.1"
+          "revision": "9c0550eef05f460d731f01632e8f03ceef35aca2",
+          "version": "0.0.0-alpha.1"
         }
       },
       {
@@ -248,8 +248,8 @@
         "package": "VaporMonitoring",
         "repositoryURL": "https://github.com/Yasumoto/VaporMonitoring.git",
         "state": {
-          "branch": "yasumoto-fork-the-things",
-          "revision": "f2dfedf22d2477dece3edb65a3a07f38082b0410",
+          "branch": "yasumoto-middleware-approach",
+          "revision": "c1fca277a395e624d55b87111da8428180bf5856",
           "version": null
         }
       },

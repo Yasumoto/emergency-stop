@@ -17,7 +17,7 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     // Use Prometheus 🔥 for monitoring
     let prometheusService = VaporPrometheus(router: router, services: &services)
     services.register(prometheusService)
-    
+
     // Use Leaf for rendering views
     config.prefer(LeafRenderer.self, for: ViewRenderer.self)
 

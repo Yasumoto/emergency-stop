@@ -7,7 +7,7 @@ import DynamoDB
 
 import Foundation
 
-let isIncidentOngoing = false
+var isIncidentOngoing = false
 let redButtonTableName: String
 let invocationsTableName: String
 
@@ -131,6 +131,7 @@ var formatter: DateFormatter {
 }
 
 for versionNumber in 1...4 {
+    isIncidentOngoing = !isIncidentOngoing
     let value = DynamoDB.PutItemInput(item: ["ServiceName": DynamoDB.AttributeValue(s: "global"),
                                              "Version": DynamoDB.AttributeValue(n: String(versionNumber)),
                                              "IsIncidentOngoing": DynamoDB.AttributeValue(bool: isIncidentOngoing),
