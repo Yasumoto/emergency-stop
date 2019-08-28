@@ -41,7 +41,8 @@ public struct LoadtestInvocation {
     }
 
     public let username: String
-    public let timestamp: Date
+    // We make this modifiable so we can update it on the server, despite what the client sends us
+    public var timestamp: Date?
     public let hostname: String
     public let loadtestToolName: String
 
@@ -53,13 +54,15 @@ public struct LoadtestInvocation {
     }
 
     public func dynamoFormat() -> DynamoValue {
-        let attributes: [String: DynamoValue.Attribute] = [
+        var attributes: [String: DynamoValue.Attribute] = [
             Fields.username: .string(self.username),
-            Fields.timestamp: .string(LoadtestInvocation.formatter.string(from: self.timestamp)),
             Fields.hostname: .string(self.hostname),
             Fields.loadtestToolName: .string(self.loadtestToolName),
             Fields.serviceName: .string("global")
         ]
+        if let timestamp = self.timestamp {
+            attributes[Fields.timestamp] = .string(LoadtestInvocation.formatter.string(from: timestamp))
+        }
         return DynamoValue(attributes: attributes)
     }
 }

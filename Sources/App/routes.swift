@@ -68,6 +68,8 @@ public func routes(_ router: Router) throws {
         } catch {
             print("Problem persisting metrics to prometheus: \(error)")
         }
+        var invocation = invocation
+        invocation.timestamp = Date()
         return invocation.write(on: req)
     }
 
