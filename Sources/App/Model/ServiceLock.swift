@@ -56,6 +56,8 @@ struct ServiceLock: Codable {
         dateFormatter.timeZone = TimeZone(identifier: "UTC")
         return dateFormatter
     }
+    private static let cache = Cache<Int, ServiceLock>()
+
 
     /// This requires and expects the currentVersion and version fields
     /// to be present.
@@ -121,6 +123,9 @@ extension ServiceLock {
     /// - Returns:
     ///     An `EventLoopFuture` used to indicate success or failure
     public func write(on worker: Request) -> EventLoopFuture<[DynamoValue]> {
+        if let version = self.version {
+            ServiceLock.cache.insert(self, forKey: version)
+        }
         let key = self.dynamoFormat()
         let query = DynamoQuery(action: .set, table: ServiceNames.dynamoTable, keys: [key])
         return worker.databaseConnection(to: .dynamo).flatMap { connection in
@@ -138,6 +143,11 @@ extension ServiceLock {
     /// - Returns:
     ///     The desired lock value
     public static func read(on worker: Request, serviceName: String = ServiceNames.global, version: Int = 0) -> EventLoopFuture<ServiceLock> {
+        if let value = ServiceLock.cache.value(forKey: version) {
+            print("Cache hit for \(version)")
+            return worker.future(value)
+        }
+        print("Cache miss for \(version)")
         let key = DynamoValue(attributes: [ServiceLock.Fields.serviceName: .string(serviceName), ServiceLock.Fields.version: .number(String(version))])
 
         let query = DynamoQuery(action: .get, table: ServiceNames.dynamoTable, keys: [key])
@@ -147,6 +157,7 @@ extension ServiceLock {
         return queryResponse.map { (output: [DynamoDatabase.Output]) -> ServiceLock in
             if let value = output.first?.attributes {
                 let lock = try ServiceLock(attributes: value)
+                ServiceLock.cache.insert(lock, forKey: version)
                 return lock
             }
             throw LockError.noResponseError("Unable to find lock for \(serviceName)")

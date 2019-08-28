@@ -66,7 +66,7 @@ public func routes(_ router: Router) throws {
             let promClient = try req.make(PrometheusClient.self)
             promClient.createCounter(forType: Int.self, named: "invocation_register", withLabelType: InvocationLabel.self).inc(1, InvocationLabel(tool: invocation.loadtestToolName))
         } catch {
-            print("Problem persisting metrics to prometheus: \(error)")
+            logger.error("Problem persisting metrics to prometheus: \(error)")
         }
         var invocation = invocation
         invocation.timestamp = Date()
@@ -100,7 +100,7 @@ func getLock(on req: Request, version: Int = 0) throws -> EventLoopFuture<String
                 let promClient = try req.make(PrometheusClient.self)
                 promClient.createCounter(forType: Int.self, named: "lock_read_errors_total", withLabelType: UrlLabel.self).inc(1, UrlLabel(url: req.http.url.path))
             } catch {
-                print("No prometheus client bootstrapped!")
+                logger.error("No prometheus client bootstrapped!")
             }
             throw ServiceLock.LockError.noResponseError("No lock retrieved.")
         }
@@ -115,7 +115,7 @@ func renderIndex(on req: Request) throws -> Future<View> {
                 let promClient = try req.make(PrometheusClient.self)
                 promClient.createCounter(forType: Int.self, named: "lock_read_errors_total", withLabelType: UrlLabel.self).inc(1, UrlLabel(url: req.http.url.path))
             } catch {
-                print("No prometheus client bootstrapped: \(error)")
+                logger.error("No prometheus client bootstrapped: \(error)")
             }
             return req.future(error: EmergencyStopErrors.noHistory)
         }
