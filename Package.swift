@@ -18,7 +18,7 @@ let package = Package(
         .package(url: "https://github.com/ianpartridge/swift-backtrace.git", from: "1.1.0"),
 
         // 🔥 Prometheus
-        .package(url: "https://github.com/MrLotU/SwiftPrometheus.git", .exact("0.0.0-alpha.1")),
+        .package(url: "https://github.com/Yasumoto/SwiftPrometheus.git", .branch("yasumoto-prevent-dupes-nio1")),
 
         // 📈 Metrics & Monitoring
         .package(url: "https://github.com/Yasumoto/VaporMonitoring.git", .branch("yasumoto-middleware-approach")),

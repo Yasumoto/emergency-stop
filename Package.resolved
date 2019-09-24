@@ -123,8 +123,8 @@
         "repositoryURL": "https://github.com/vapor/routing.git",
         "state": {
           "branch": null,
-          "revision": "626190ddd2bd9f967743b60ba6adaf90bbd2651c",
-          "version": "3.0.2"
+          "revision": "d76f339c9716785e5079af9d7075d28ff7da3d92",
+          "version": "3.1.0"
         }
       },
       {
@@ -150,8 +150,8 @@
         "repositoryURL": "https://github.com/ianpartridge/swift-backtrace.git",
         "state": {
           "branch": null,
-          "revision": "f244ad10744fc8e1b9f012682df94a27672c7033",
-          "version": "1.1.0"
+          "revision": "eaf2cef011c0c23d1701aa60b364def8015dc3c7",
+          "version": "1.1.1"
         }
       },
       {
@@ -159,8 +159,8 @@
         "repositoryURL": "https://github.com/apple/swift-metrics.git",
         "state": {
           "branch": null,
-          "revision": "8e5110dcd6584ff5acfec40e31263a8d07cba783",
-          "version": "1.1.0"
+          "revision": "3fefedaaef285830cc98ae80231140122076a7e0",
+          "version": "1.2.0"
         }
       },
       {
@@ -201,11 +201,11 @@
       },
       {
         "package": "SwiftPrometheus",
-        "repositoryURL": "https://github.com/MrLotU/SwiftPrometheus.git",
+        "repositoryURL": "https://github.com/Yasumoto/SwiftPrometheus.git",
         "state": {
-          "branch": null,
-          "revision": "9c0550eef05f460d731f01632e8f03ceef35aca2",
-          "version": "0.0.0-alpha.1"
+          "branch": "yasumoto-prevent-dupes-nio1",
+          "revision": "83799050faa559a1fbb008857250d41c5a45609e",
+          "version": null
         }
       },
       {
@@ -249,7 +249,7 @@
         "repositoryURL": "https://github.com/Yasumoto/VaporMonitoring.git",
         "state": {
           "branch": "yasumoto-middleware-approach",
-          "revision": "c1fca277a395e624d55b87111da8428180bf5856",
+          "revision": "a4725a5938c1ea0041838c3a6e8b3b9475f02360",
           "version": null
         }
       },

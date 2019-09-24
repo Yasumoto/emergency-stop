@@ -45,29 +45,32 @@ public func routes(_ router: Router) throws {
     }
 
     router.post { req -> Future<View> in
+        let promClient = try req.make(PrometheusClient.self)
+
         let username = String(req.http.cookies["machine-cookie"]?.string.split(separator: ":").first ?? "debugging")
         logger.info("\(username) updating the lock")
         return try req.content.decode(Update.self).flatMap { update in
             return ServiceLock.read(on: req, serviceName: ServiceNames.global, version: 0).flatMap { latestLock in
                 var lock = ServiceLock(serviceName: latestLock.serviceName, version: latestLock.currentVersion! + 1, currentVersion: nil, isIncidentOngoing: update.isIncidentOngoing, username: username, timestamp: Date(), message: update.message)
                 return lock.write(on: req).flatMap { writtenOutput -> EventLoopFuture<View> in
+                    promClient.createCounter(forType: Int.self, named: "lock_updates_total", withLabelType: UrlLabel.self).inc()
                     lock.currentVersion = lock.version
                     lock.version = 0
                     return lock.write(on: req).flatMap { values -> EventLoopFuture<View> in
                         return try renderIndex(on: req)
                     }
+                }.thenIfErrorThrowing { error in
+                    promClient.createCounter(forType: Int.self, named: "lock_write_errors_total", withLabelType: UrlLabel.self).inc()
+                    throw error
                 }
             }
         }
     }
 
     router.post(LoadtestInvocation.self, at: "register") { (req, invocation) -> EventLoopFuture<LoadtestInvocation> in
-        do {
-            let promClient = try req.make(PrometheusClient.self)
-            promClient.createCounter(forType: Int.self, named: "invocation_register", withLabelType: InvocationLabel.self).inc(1, InvocationLabel(tool: invocation.loadtestToolName))
-        } catch {
-            logger.error("Problem persisting metrics to prometheus: \(error)")
-        }
+        let promClient = try req.make(PrometheusClient.self)
+        promClient.createCounter(forType: Int.self, named: "invocation_register", withLabelType: InvocationLabel.self).inc(1, InvocationLabel(tool: invocation.loadtestToolName))
+
         var invocation = invocation
         invocation.timestamp = Date()
         return invocation.write(on: req)
@@ -90,18 +93,15 @@ public func routes(_ router: Router) throws {
 
 func getLock(on req: Request, version: Int = 0) throws -> EventLoopFuture<String> {
     logger.info("Checking status for global/\(version)")
+    let promClient = try req.make(PrometheusClient.self)
+
     return ServiceLock.read(on: req, version: version).map { lock -> String in
         logger.info("Retrieved status of \(version) at \(Date())")
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
         guard let response = try String(data: encoder.encode(lock), encoding: .utf8) else {
             logger.error("No lock retrieved for global/\(version)")
-            do {
-                let promClient = try req.make(PrometheusClient.self)
-                promClient.createCounter(forType: Int.self, named: "lock_read_errors_total", withLabelType: UrlLabel.self).inc(1, UrlLabel(url: req.http.url.path))
-            } catch {
-                logger.error("No prometheus client bootstrapped!")
-            }
+            promClient.createCounter(forType: Int.self, named: "lock_read_error").inc(1)
             throw ServiceLock.LockError.noResponseError("No lock retrieved.")
         }
         return response
@@ -109,14 +109,11 @@ func getLock(on req: Request, version: Int = 0) throws -> EventLoopFuture<String
 }
 
 func renderIndex(on req: Request) throws -> Future<View> {
+    let promClient = try req.make(PrometheusClient.self)
+
     let locks: EventLoopFuture<[ServiceLock]> = ServiceLock.read(on: req, serviceName: ServiceNames.global, version: 0).flatMap { (latestLock: ServiceLock) -> EventLoopFuture<[ServiceLock]> in
         guard let lastVersion = latestLock.currentVersion else {
-            do {
-                let promClient = try req.make(PrometheusClient.self)
-                promClient.createCounter(forType: Int.self, named: "lock_read_errors_total", withLabelType: UrlLabel.self).inc(1, UrlLabel(url: req.http.url.path))
-            } catch {
-                logger.error("No prometheus client bootstrapped: \(error)")
-            }
+            promClient.createCounter(forType: Int.self, named: "lock_read_error").inc(1)
             return req.future(error: EmergencyStopErrors.noHistory)
         }
         return ServiceLock.readRange(on: req, serviceName: ServiceNames.global, versions: max(0,   lastVersion-4)...lastVersion)
