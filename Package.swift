@@ -11,16 +11,18 @@ let package = Package(
         .package(url: "https://github.com/vapor/leaf.git", from: "3.0.0"),
 
         // 🧩 DynamoDB Database
-        .package(url: "https://github.com/Yasumoto/fluent-dynamodb.git", from: "0.0.3"),
+        //.package(url: "https://github.com/Yasumoto/fluent-dynamodb.git", from: "0.0.3"),
+        .package(url: "https://github.com/Yasumoto/fluent-dynamodb", .branch("query-support")),
 
         // 🔎 Better support for logging crashes
-        .package(url: "https://github.com/ianpartridge/swift-backtrace.git", from: "1.0.2"),
+        .package(url: "https://github.com/ianpartridge/swift-backtrace.git", from: "1.1.0"),
 
         // 🔥 Prometheus
-        .package(url: "https://github.com/Yasumoto/SwiftPrometheus.git", from: "1.0.0-yasumoto.1"),
+        .package(url: "https://github.com/Yasumoto/SwiftPrometheus.git", .branch("yasumoto-prevent-dupes-nio1")),
 
         // 📈 Metrics & Monitoring
-        .package(url: "https://github.com/Yasumoto/VaporMonitoring.git", .branch("yasumoto-fork-the-things"))
+        .package(url: "https://github.com/Yasumoto/VaporMonitoring.git", .branch("yasumoto-middleware-approach")),
+
     ],
     targets: [
         .target(name: "App", dependencies: [
@@ -31,6 +33,7 @@ let package = Package(
             "Vapor",
             "VaporMonitoring"
         ]),
+        .target(name: "BootstrapDatabaseTool", dependencies: ["FluentDynamoDB"]),
         .target(name: "Run", dependencies: ["App"]),
         .testTarget(name: "AppTests", dependencies: ["App"])
     ]

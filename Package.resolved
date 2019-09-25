@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/swift-aws/aws-sdk-swift",
         "state": {
           "branch": null,
-          "revision": "29a26999cc49e6a46f1a173c8478963ee80660c6",
-          "version": "3.0.1"
+          "revision": "fc7b893a5a04f107039263ec51fc47fe4e4dd4bb",
+          "version": "3.1.0"
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/swift-aws/aws-sdk-swift-core.git",
         "state": {
           "branch": null,
-          "revision": "254c1e3f85414bf0f529f47cc081be2bd0c12c1c",
-          "version": "3.0.1"
+          "revision": "80cc521d5e3f42242f10d9d0fe268cf003a3badb",
+          "version": "3.1.1"
         }
       },
       {
@@ -66,11 +66,11 @@
       },
       {
         "package": "fluent-dynamodb",
-        "repositoryURL": "https://github.com/Yasumoto/fluent-dynamodb.git",
+        "repositoryURL": "https://github.com/Yasumoto/fluent-dynamodb",
         "state": {
-          "branch": null,
-          "revision": "93a2b5e70832de13f595c2f0280e718bbe88408a",
-          "version": "0.0.3"
+          "branch": "query-support",
+          "revision": "129a068b5cba0ce380cc35f1998d416068530b06",
+          "version": null
         }
       },
       {
@@ -87,8 +87,8 @@
         "repositoryURL": "https://github.com/Yasumoto/HypertextApplicationLanguage.git",
         "state": {
           "branch": null,
-          "revision": "2302002502fe573494577cc6e8df686e385519f8",
-          "version": "1.1.0"
+          "revision": "aa2c9141d491682f17b2310aed17b9adfc006256",
+          "version": "1.1.1"
         }
       },
       {
@@ -123,8 +123,8 @@
         "repositoryURL": "https://github.com/vapor/routing.git",
         "state": {
           "branch": null,
-          "revision": "626190ddd2bd9f967743b60ba6adaf90bbd2651c",
-          "version": "3.0.2"
+          "revision": "d76f339c9716785e5079af9d7075d28ff7da3d92",
+          "version": "3.1.0"
         }
       },
       {
@@ -150,8 +150,8 @@
         "repositoryURL": "https://github.com/ianpartridge/swift-backtrace.git",
         "state": {
           "branch": null,
-          "revision": "4ba1c190a1e7be53c743f55920c24bd9e000f8b2",
-          "version": "1.0.2"
+          "revision": "eaf2cef011c0c23d1701aa60b364def8015dc3c7",
+          "version": "1.1.1"
         }
       },
       {
@@ -159,8 +159,8 @@
         "repositoryURL": "https://github.com/apple/swift-metrics.git",
         "state": {
           "branch": null,
-          "revision": "8e5110dcd6584ff5acfec40e31263a8d07cba783",
-          "version": "1.1.0"
+          "revision": "3fefedaaef285830cc98ae80231140122076a7e0",
+          "version": "1.2.0"
         }
       },
       {
@@ -203,18 +203,9 @@
         "package": "SwiftPrometheus",
         "repositoryURL": "https://github.com/Yasumoto/SwiftPrometheus.git",
         "state": {
-          "branch": null,
-          "revision": "37237516f92a18148d6ae2ccbc378481b21fe07d",
-          "version": "1.0.0-yasumoto.1"
-        }
-      },
-      {
-        "package": "SwiftyJSON",
-        "repositoryURL": "https://github.com/SwiftyJSON/SwiftyJSON.git",
-        "state": {
-          "branch": null,
-          "revision": "2b6054efa051565954e1d2b9da831680026cd768",
-          "version": "4.3.0"
+          "branch": "yasumoto-prevent-dupes-nio1",
+          "revision": "83799050faa559a1fbb008857250d41c5a45609e",
+          "version": null
         }
       },
       {
@@ -257,8 +248,8 @@
         "package": "VaporMonitoring",
         "repositoryURL": "https://github.com/Yasumoto/VaporMonitoring.git",
         "state": {
-          "branch": "yasumoto-fork-the-things",
-          "revision": "9ded4c6c337be53e8648a68dd3287a41aec6c699",
+          "branch": "yasumoto-middleware-approach",
+          "revision": "a4725a5938c1ea0041838c3a6e8b3b9475f02360",
           "version": null
         }
       },

@@ -15,9 +15,9 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     services.register(router, as: Router.self)
 
     // Use Prometheus 🔥 for monitoring
-    let prometheusService = VaporPrometheus(router: router, route: "metrics")
+    let prometheusService = VaporPrometheus(router: router, services: &services)
     services.register(prometheusService)
-    
+
     // Use Leaf for rendering views
     config.prefer(LeafRenderer.self, for: ViewRenderer.self)
 
@@ -29,7 +29,7 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     let credentialsPath = Environment.get("CREDENTIALS_FILENAME") ?? "/etc/emergency-stop.json"
     let creds = awsCredentials(path: credentialsPath)
 
-    let endpoint = Environment.get("ENV") == "local" ? "http://localhost:8000" : nil
+    let endpoint = Environment.get("ENVIRONMENT") == "local" ? "http://localhost:8000" : nil
     let dynamoConfiguration =  DynamoConfiguration(accessKeyId: creds.accessKey, secretAccessKey: creds.secretKey, endpoint: endpoint)
 
     let dynamo = DynamoDatabase(config: dynamoConfiguration)
