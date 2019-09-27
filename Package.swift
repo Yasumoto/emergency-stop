@@ -1,4 +1,4 @@
-// swift-tools-version:5.0
+// swift-tools-version:5.1
 import PackageDescription
 
 let package = Package(
@@ -15,10 +15,10 @@ let package = Package(
         .package(url: "https://github.com/Yasumoto/fluent-dynamodb", .branch("query-support")),
 
         // 🔎 Better support for logging crashes
-        .package(url: "https://github.com/ianpartridge/swift-backtrace.git", from: "1.1.0"),
+        .package(url: "https://github.com/ianpartridge/swift-backtrace.git", from: "1.1.1"),
 
         // 🔥 Prometheus
-        .package(url: "https://github.com/Yasumoto/SwiftPrometheus.git", .branch("yasumoto-prevent-dupes-nio1")),
+        .package(url: "https://github.com/MrLotU/SwiftPrometheus.git", from: "0.4.0-alpha.1"),
 
         // 📈 Metrics & Monitoring
         .package(url: "https://github.com/Yasumoto/VaporMonitoring.git", .branch("yasumoto-middleware-approach")),

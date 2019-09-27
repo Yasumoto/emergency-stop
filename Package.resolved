@@ -6,17 +6,17 @@
         "repositoryURL": "https://github.com/swift-aws/aws-sdk-swift",
         "state": {
           "branch": null,
-          "revision": "fc7b893a5a04f107039263ec51fc47fe4e4dd4bb",
-          "version": "3.1.0"
+          "revision": "ed9cba4149087e19569d470867c73eff4b7ef552",
+          "version": "3.2.0"
         }
       },
       {
         "package": "AWSSDKSwiftCore",
-        "repositoryURL": "https://github.com/swift-aws/aws-sdk-swift-core.git",
+        "repositoryURL": "https://github.com/swift-aws/aws-sdk-swift-core",
         "state": {
-          "branch": null,
-          "revision": "80cc521d5e3f42242f10d9d0fe268cf003a3badb",
-          "version": "3.1.1"
+          "branch": "yasumoto-5.1",
+          "revision": "516c1df2d523406ff3234334d924f7149a242e2e",
+          "version": null
         }
       },
       {
@@ -33,8 +33,8 @@
         "repositoryURL": "https://github.com/vapor/core.git",
         "state": {
           "branch": null,
-          "revision": "c64f63cb21631010952f7abfef719d376ab6a441",
-          "version": "3.9.1"
+          "revision": "18f2436bf7a6bc2224372c0885db2e0159af1649",
+          "version": "3.9.2"
         }
       },
       {
@@ -69,7 +69,7 @@
         "repositoryURL": "https://github.com/Yasumoto/fluent-dynamodb",
         "state": {
           "branch": "query-support",
-          "revision": "129a068b5cba0ce380cc35f1998d416068530b06",
+          "revision": "0fa612aff09f9c3985c453f5a6077b8f4a230f0f",
           "version": null
         }
       },
@@ -84,7 +84,7 @@
       },
       {
         "package": "HypertextApplicationLanguage",
-        "repositoryURL": "https://github.com/Yasumoto/HypertextApplicationLanguage.git",
+        "repositoryURL": "https://github.com/swift-aws/HypertextApplicationLanguage.git",
         "state": {
           "branch": null,
           "revision": "aa2c9141d491682f17b2310aed17b9adfc006256",
@@ -111,11 +111,11 @@
       },
       {
         "package": "INIParser",
-        "repositoryURL": "https://github.com/PerfectlySoft/Perfect-INIParser.git",
+        "repositoryURL": "https://github.com/swift-aws/Perfect-INIParser.git",
         "state": {
           "branch": null,
-          "revision": "0952aac9ca54324ff25191569fd9c48eec424772",
-          "version": "3.0.2"
+          "revision": "42de0efc7a01105e19b80d533d3d282a98277f6c",
+          "version": "3.0.3"
         }
       },
       {
@@ -201,11 +201,11 @@
       },
       {
         "package": "SwiftPrometheus",
-        "repositoryURL": "https://github.com/Yasumoto/SwiftPrometheus.git",
+        "repositoryURL": "https://github.com/MrLotU/SwiftPrometheus.git",
         "state": {
-          "branch": "yasumoto-prevent-dupes-nio1",
-          "revision": "83799050faa559a1fbb008857250d41c5a45609e",
-          "version": null
+          "branch": null,
+          "revision": "9c0550eef05f460d731f01632e8f03ceef35aca2",
+          "version": "0.4.0-alpha.1"
         }
       },
       {
@@ -240,8 +240,8 @@
         "repositoryURL": "https://github.com/vapor/vapor.git",
         "state": {
           "branch": null,
-          "revision": "c86ada59b31c69f08a6abd4f776537cba48d5df6",
-          "version": "3.3.0"
+          "revision": "92a58a9a84e4330500b99fe355a94d29f67abe58",
+          "version": "3.3.1"
         }
       },
       {
