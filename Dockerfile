@@ -14,8 +14,8 @@ RUN swift build -c release -Xswiftc -g && mv `swift build -c release -Xswiftc -g
 FROM ubuntu:18.04
 ARG env
 RUN apt-get -qq update && apt-get install -y \
-  libicu60 libxml2 libbsd0 libcurl3 libatomic1 \
-  tzdata \
+  libicu60 libxml2 libbsd0 libcurl4 libatomic1 \
+  libz-dev tzdata \
   && rm -r /var/lib/apt/lists/*
 WORKDIR /app
 COPY --from=builder /build/bin/Run .
