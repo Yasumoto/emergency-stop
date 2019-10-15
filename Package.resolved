@@ -6,17 +6,17 @@
         "repositoryURL": "https://github.com/swift-aws/aws-sdk-swift",
         "state": {
           "branch": null,
-          "revision": "ed9cba4149087e19569d470867c73eff4b7ef552",
-          "version": "3.2.0"
+          "revision": "028a16332df2212f82dc64ada4568131844a9e47",
+          "version": "3.3.0"
         }
       },
       {
         "package": "AWSSDKSwiftCore",
-        "repositoryURL": "https://github.com/swift-aws/aws-sdk-swift-core",
+        "repositoryURL": "https://github.com/swift-aws/aws-sdk-swift-core.git",
         "state": {
-          "branch": "yasumoto-5.1",
-          "revision": "516c1df2d523406ff3234334d924f7149a242e2e",
-          "version": null
+          "branch": null,
+          "revision": "14dc7e963b9889c57395cb280f634540da189501",
+          "version": "3.4.0"
         }
       },
       {
@@ -60,8 +60,8 @@
         "repositoryURL": "https://github.com/vapor/fluent",
         "state": {
           "branch": null,
-          "revision": "b915c321c6f9e83743ee5efa35a30895e1b02e51",
-          "version": "3.2.0"
+          "revision": "783819d8838d15e1a05b459aa0fd1bde1e37ac26",
+          "version": "3.2.1"
         }
       },
       {
@@ -69,7 +69,7 @@
         "repositoryURL": "https://github.com/Yasumoto/fluent-dynamodb",
         "state": {
           "branch": "query-support",
-          "revision": "0fa612aff09f9c3985c453f5a6077b8f4a230f0f",
+          "revision": "071e24d3d79bd030b5dfc1c08653b2bffd593d06",
           "version": null
         }
       },
@@ -201,11 +201,11 @@
       },
       {
         "package": "SwiftPrometheus",
-        "repositoryURL": "https://github.com/MrLotU/SwiftPrometheus.git",
+        "repositoryURL": "https://github.com/Yasumoto/SwiftPrometheus.git",
         "state": {
-          "branch": null,
-          "revision": "9c0550eef05f460d731f01632e8f03ceef35aca2",
-          "version": "0.4.0-alpha.1"
+          "branch": "nio1",
+          "revision": "fe69dfa28f885360eb268ec8fa06c2243a845a26",
+          "version": null
         }
       },
       {
@@ -249,7 +249,7 @@
         "repositoryURL": "https://github.com/Yasumoto/VaporMonitoring.git",
         "state": {
           "branch": "yasumoto-middleware-approach",
-          "revision": "a4725a5938c1ea0041838c3a6e8b3b9475f02360",
+          "revision": "d8ee3bcdc54df36eb0e65b4e54d34aafa4574b98",
           "version": null
         }
       },
